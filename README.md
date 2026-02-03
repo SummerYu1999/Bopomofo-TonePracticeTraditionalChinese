@@ -70,7 +70,7 @@
 
         .char-unit.active-trigger {
             border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(214, 48, 49, 0.25);
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.2);
             transform: translateY(-5px);
         }
 
@@ -111,10 +111,10 @@
             max-width: 850px;
             width: 100%;
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-top: 6px solid var(--primary);
+            border-top: 8px solid var(--accent);
         }
 
         .active-title {
@@ -127,7 +127,7 @@
 
         .tip-card {
             background: #fdfdfd;
-            border-left: 5px solid #3498db;
+            border-left: 5px solid var(--accent);
             padding: 15px;
             margin-bottom: 15px;
             line-height: 1.8;
@@ -135,11 +135,12 @@
 
         .tag {
             font-weight: bold;
-            color: #2980b9;
+            color: var(--accent);
             margin-right: 10px;
-            background: #e1f5fe;
+            background: #f0fff4;
             padding: 2px 8px;
             border-radius: 4px;
+            border: 1px solid var(--accent);
         }
 
         .warning-note {
@@ -148,14 +149,12 @@
             margin-top: 5px;
             display: block;
         }
+
         .tone-visual-box {
-    margin-top: 20px;
-    padding: 20px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    text-align: center;
-}
+            margin-top: 20px;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -171,83 +170,72 @@
     <div class="panel">
         <div id="title" class="active-title">點擊單字或按數字鍵開始學習</div>
         <div id="content"></div>
-        <div id="toneSection" class="tone-visual-box" style="display:none;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-        <div style="display: flex; flex-direction: column-reverse; justify-content: space-between; height: 160px; font-size: 12px; color: #888; padding-bottom: 30px;">
-            <span>1樓</span><span>2樓</span><span>3樓</span><span>4樓</span><span>5樓</span>
-        </div>
         
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <svg id="toneCanvas" width="200" height="160" viewBox="0 0 100 100" style="background: #fff; border-left: 2px solid #555; border-bottom: 2px solid #555;">
-                <g id="gridPoints" fill="#ccc">
-                    <circle cx="0" cy="0" r="1"/><circle cx="25" cy="0" r="1"/><circle cx="50" cy="0" r="1"/><circle cx="75" cy="0" r="1"/><circle cx="100" cy="0" r="1"/>
-                    <circle cx="0" cy="25" r="1"/><circle cx="25" cy="25" r="1"/><circle cx="50" cy="25" r="1"/><circle cx="75" cy="25" r="1"/><circle cx="100" cy="25" r="1"/>
-                    <circle cx="0" cy="50" r="1"/><circle cx="25" cy="50" r="1"/><circle cx="50" cy="50" r="1"/><circle cx="75" cy="50" r="1"/><circle cx="100" cy="50" r="1"/>
-                    <circle cx="0" cy="75" r="1"/><circle cx="25" cy="75" r="1"/><circle cx="50" cy="75" r="1"/><circle cx="75" cy="75" r="1"/><circle cx="100" cy="75" r="1"/>
-                    <circle cx="0" cy="100" r="1"/><circle cx="25" cy="100" r="1"/><circle cx="50" cy="100" r="1"/><circle cx="75" cy="100" r="1"/><circle cx="100" cy="100" r="1"/>
-                </g>
-                <path id="tonePath" d="" fill="none" stroke="#27ae60" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div style="display: flex; justify-content: space-between; width: 200px; font-size: 12px; color: #888; padding-top: 8px;">
-                <span>1拍</span><span>2拍</span><span>3拍</span><span>4拍</span><span>5拍</span>
+        <div id="toneSection" class="tone-visual-box" style="display:none;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                <div style="display: flex; flex-direction: column-reverse; justify-content: space-between; height: 160px; font-size: 14px; color: #888; padding-bottom: 35px; font-weight: bold;">
+                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <svg id="toneCanvas" width="200" height="160" viewBox="0 0 100 100" style="background: #fff; border-left: 2px solid #333; border-bottom: 2px solid #333;">
+                        <g id="gridPoints" fill="#ddd">
+                            <circle cx="0" cy="0" r="1.5"/><circle cx="25" cy="0" r="1.5"/><circle cx="50" cy="0" r="1.5"/><circle cx="75" cy="0" r="1.5"/><circle cx="100" cy="0" r="1.5"/>
+                            <circle cx="0" cy="25" r="1.5"/><circle cx="25" cy="25" r="1.5"/><circle cx="50" cy="25" r="1.5"/><circle cx="75" cy="25" r="1.5"/><circle cx="100" cy="25" r="1.5"/>
+                            <circle cx="0" cy="50" r="1.5"/><circle cx="25" cy="50" r="1.5"/><circle cx="50" cy="50" r="1.5"/><circle cx="75" cy="50" r="1.5"/><circle cx="100" cy="50" r="1.5"/>
+                            <circle cx="0" cy="75" r="1.5"/><circle cx="25" cy="75" r="1.5"/><circle cx="50" cy="75" r="1.5"/><circle cx="75" cy="75" r="1.5"/><circle cx="100" cy="75" r="1.5"/>
+                            <circle cx="0" cy="100" r="1.5"/><circle cx="25" cy="100" r="1.5"/><circle cx="50" cy="100" r="1.5"/><circle cx="75" cy="100" r="1.5"/><circle cx="100" cy="100" r="1.5"/>
+                        </g>
+                        <path id="tonePath" d="" fill="none" stroke="#27ae60" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div style="display: flex; justify-content: space-between; width: 200px; font-size: 14px; color: #888; padding-top: 10px; font-weight: bold;">
+                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                    </div>
+                </div>
             </div>
+            <div id="toneValueDisplay" style="color:#27ae60; font-weight:bold; margin-top:20px; font-size: 1.5rem; letter-spacing: 2px;"></div>
         </div>
     </div>
-    <div id="toneValueDisplay" style="color:#27ae60; font-weight:bold; margin-top:15px; font-size: 1.3rem;"></div>
-</div>
 
 <script>
-    /**
-     * 【專業精密字典】 - 整合發音細節與編碼修正
-     */
     const MasterDictionary = {
-        // 1. 唇音類
-        "ㄅ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。*注意不要造成爆音",
-        "ㄆ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。*注意不要造成爆音",
-        "ㄇ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。*注意不要造成爆音",
-        "ㄈ": "【唇齒音】上齒接觸下唇。<span class='warning-note'>注意：若沒碰到下唇會變成「ㄏ」的模糊音。</span>",
-
-        // 2. 舌尖與舌根
-        "ㄉ": "【舌尖中音】利用舌尖位置（牙齦或硬顎前部）及舌面微凸造成阻礙發音。",
-        "ㄊ": "【舌尖中音】利用舌尖位置（牙齦或硬顎前部）及舌面為凹造成阻礙發音。",
-        "ㄋ": "【鼻音】鼻翼會有震動感，共鳴在鼻腔。",
-        "ㄌ": "【邊音】鼻腔不震動，氣流從舌頭兩邊流出。",
-        "ㄍ": "【舌根音】舌後根頂住軟顎。<span class='warning-note'>細節：嘴巴需打開約一個指節寬，否則韻母會跑掉。</span>",
-        "ㄎ": "【舌根音】舌後根頂住軟顎。<span class='warning-note'>細節：嘴巴需打開約一個指節寬。</span>",
-        "ㄏ": "【舌根音】舌後根頂住軟顎。<span class='warning-note'>細節：嘴巴需打開約一個指節寬。</span>",
-
-        // 3. 舌面與平翹舌
-        "ㄐ": "【舌面音】舌面與硬軟顎接觸，氣流從舌面中間衝出。",
-        "ㄑ": "【舌面音】舌面與硬軟顎接觸，氣流從舌面中間衝出。",
-        "ㄒ": "【舌面音】舌面貼住硬顎。<span class='warning-note'>注意：與英文「C」(舌尖往下)不同。</span>",
-        "ㄓ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄔ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄕ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄖ": "【翹舌音】舌尖垂直放，不可碰到牙齒。",
-        "ㄗ": "【平舌音】舌尖往前下靠近下齒背，舌面不可碰到上齒背。",
-        "ㄘ": "【平舌音】舌尖往前下靠近下齒背，舌面不可碰到上齒背。",
-        "ㄙ": "【平舌音】舌尖往前下靠近下齒背，舌面不可碰到上齒背。",
-
-        // 4. 介符 (齊齒、合口、撮口)
-        "ㄧ": "【介符/齊齒】嘴角往兩旁拉開做出「一」字形，有助於口型擺動。",
-        "一": "【介符/齊齒】嘴角往兩旁拉開做出「一」字形，有助於口型擺動。",
-        "ㄨ": "【介符/合口】雙唇收圓向前突。規律：ㄅㄆㄇㄈ不與ㄨ結合。",
-        "ㄩ": "【介符/撮口】嘴唇需用力向中間收攏成圓孔狀。發音時嘴部空間與氣流流暢度並重。",
-
-        // 5. 韻母 (單、複、鼻、特殊)
-        "ㄚ": "【韻母】嘴巴要徹底打開，像要塞進大獅子頭一樣。",
-        "ㄛ": "【單韻母】圓唇口型。注意：ㄅㄆㄇㄈ後應念ㄛ（早期教法），維持口型純淨。",
-        "ㄜ": "【單韻母】鴨蛋形長橢圓口型，舌面往下拉壓（含湯匙感）。",
-        "ㄝ": "【單韻母】口型要圓滿，確保足夠空間，避免因吃字導致音軌模糊。",
-        "ㄞ": "【複韻母】運要圓滿。由「ㄚ」徹底打開起頭，滑向「ㄧ」音軌。",
-        "ㄟ": "【複韻母】發音要圓滿，確保口腔內共鳴空間足夠，聲音才不悶。",
-        "ㄠ": "【複韻母】由「ㄚ」轉向「ㄨ」，口型由大變小，過程需滑順。",
-        "ㄡ": "【複韻母】由「ㄛ」起點收於「ㄨ」。維持氣流連貫，確保音軌完整。",
-        "ㄢ": "【前鼻音】氣流在口腔前部與鼻腔產生共鳴。",
-        "ㄣ": "【鼻韻母】氣流共鳴在鼻腔前部。",
-        "ㄤ": "【後鼻音】舌後根頂住軟顎。共鳴腔在脖子後方與鼻腔後部，嘴巴開度要足。",
-        "ㄥ": "【鼻韻母】舌後根頂住軟顎，共鳴腔在脖子後方與鼻腔後部。",
-        "ㄦ": "【特殊韻母】舌尖擺到位後快速鬆開，避免舌頭過度勾起產生重捲舌雜音。"
+        "ㄅ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。",
+        "ㄆ": "【雙唇音】送氣音。上下唇先閉合，氣流強力衝出。",
+        "ㄇ": "【雙唇音】鼻音。氣流從鼻腔流出。",
+        "ㄈ": "【唇齒音】上齒接觸下唇。",
+        "ㄉ": "【舌尖中音】舌尖抵住上齒齦。",
+        "ㄊ": "【舌尖中音】送氣音。舌尖抵住上齒齦。",
+        "ㄋ": "【鼻音】氣流從鼻腔流出。",
+        "ㄌ": "【邊音】氣流從舌頭兩側流出。",
+        "ㄍ": "【舌根音】舌後根頂住軟顎。",
+        "ㄎ": "【舌根音】送氣音。舌後根頂住軟顎。",
+        "ㄏ": "【舌根音】舌後根靠近軟顎，摩擦發音。",
+        "ㄐ": "【舌面音】舌面前部貼住硬顎前部。",
+        "ㄑ": "【舌面音】送氣音。舌面前部貼住硬顎前部。",
+        "ㄒ": "【舌面音】舌面前部靠近硬顎前部，摩擦發音。",
+        "ㄓ": "【翹舌音】舌尖上捲。",
+        "ㄔ": "【翹舌音】送氣音。舌尖上捲。",
+        "ㄕ": "【翹舌音】舌尖上捲，摩擦發音。",
+        "ㄖ": "【翹舌音】濁音。舌尖上捲，帶有震動感。",
+        "ㄗ": "【平舌音】舌尖抵住下齒背。",
+        "ㄘ": "【平舌音】送氣音。舌尖抵住下齒背。",
+        "ㄙ": "【平舌音】舌尖靠近下齒背，摩擦發音。",
+        "ㄧ": "【介符/齊齒】嘴角往兩旁拉開。",
+        "ㄨ": "【介符/合口】雙唇收圓向前突。",
+        "ㄩ": "【介符/撮口】嘴唇用力向中間收攏。",
+        "ㄚ": "【韻母】嘴巴徹底打開。",
+        "ㄛ": "【單韻母】圓唇口型。",
+        "ㄜ": "【單韻母】鴨蛋形長橢圓口型。",
+        "ㄝ": "【單韻母】口型圓滿，空間充足。",
+        "ㄞ": "【複韻母】由ㄚ滑向ㄧ。",
+        "ㄟ": "【複韻母】由ㄝ滑向ㄧ。",
+        "ㄠ": "【複韻母】由ㄚ滑向ㄨ。",
+        "ㄡ": "【複韻母】由ㄛ滑向ㄨ。",
+        "ㄢ": "【前鼻音】氣流在鼻腔前部。",
+        "ㄣ": "【鼻韻母】共鳴在鼻腔前部。",
+        "ㄤ": "【後鼻音】舌後根頂住軟顎。",
+        "ㄥ": "【鼻韻母】共鳴在鼻腔後部。",
+        "ㄦ": "【特殊韻母】捲舌音。"
     };
 
     const wordLib = [
@@ -259,19 +247,13 @@
     ];
 
     let currentTask = null;
-// 聲調與調值坐標對應表 (y坐標 20=5, 40=4, 60=3, 80=2, 100=1)
     const toneMap = {
-    // 陰平 55：從1拍5樓到5拍5樓
-    "":  { val: "陰平", path: "M 0 0 L 100 0" }, 
-    // 陽平 35：從1拍3樓到5拍5樓
-    "ˊ": { val: "陽平", path: "M 0 50 L 100 0" }, 
-    // 上聲 214：1拍2樓 -> 3拍1樓 -> 5拍4樓 (紮實轉折)
-    "ˇ": { val: "上聲", path: "M 0 75 Q 50 125 100 25" }, 
-    // 去聲 51：從1拍5樓到5拍1樓
-    "ˋ": { val: "去聲", path: "M 0 0 L 100 100" }, 
-    // 輕聲：半拍，定位在第3拍的3樓中心
-    "˙": { val: "輕聲", path: "M 50 50 m -2 0 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0" } 
-};
+        "":  { val: "陰平", path: "M 0 0 L 100 0" }, 
+        "ˊ": { val: "陽平", path: "M 0 50 L 100 0" }, 
+        "ˇ": { val: "上聲", path: "M 0 75 Q 50 125 100 25" }, // 平滑曲線版
+        "ˋ": { val: "去聲", path: "M 0 0 L 100 100" }, 
+        "˙": { val: "輕聲", path: "M 50 50 m -2 0 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0" } 
+    };
 
     function showDetail(index) {
         if (!currentTask || !currentTask.c[index]) return;
@@ -286,7 +268,6 @@
         const container = document.getElementById('content');
         container.innerHTML = "";
         
-        // 1. 發音解析 (處理 ㄅㄆㄇ ㄧㄨㄩ ㄚㄛㄝ等)
         [...pinyin].forEach(sym => {
             let cleanSym = (sym === "一") ? "ㄧ" : sym;
             if (MasterDictionary[cleanSym]) {
@@ -294,36 +275,24 @@
             }
         });
 
-       // 2. 聲調卡片化 (修正 undefined 並換成綠色)
         const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : ""; 
-        const toneKey = toneMark === "" ? "" : toneMark; 
-        const toneInfo = toneMap[toneKey];
+        const toneInfo = toneMap[toneMark];
 
         if (toneInfo) {
             const displayMark = (toneMark === "") ? "—" : toneMark; 
-            
             container.innerHTML += `
-                <div class="tip-card" style="border-left-color: #27ae60;">
-                    <span class="tag" style="background:#f0fff4; color:#27ae60; border:1px solid #27ae60;">${displayMark}</span> 
-                    這是「${toneInfo.val}」，請觀察下方的聲音走勢。
+                <div class="tip-card">
+                    <span class="tag">${displayMark}</span> 這是「${toneInfo.val}」，請觀察下方的聲音走勢。
                 </div>`;
 
-            // 3. 更新象限圖 (顏色改為綠色)
             document.getElementById('toneSection').style.display = "block";
             const pathElement = document.getElementById('tonePath');
             pathElement.setAttribute('d', toneInfo.path);
-            pathElement.setAttribute('stroke', '#27ae60'); // 線條改綠色
-            
-            if (toneMark === "˙") {
-                pathElement.setAttribute('fill', '#27ae60'); // 輕聲實心點改綠色
-            } else {
-                pathElement.setAttribute('fill', 'none');
-            }
-            
-            document.getElementById('toneValueDisplay').style.color = "#27ae60"; // 文字改綠色
+            pathElement.setAttribute('fill', toneMark === "˙" ? "#27ae60" : "none");
             document.getElementById('toneValueDisplay').innerText = toneInfo.val;
         }
     }
+
     function refresh() {
         document.getElementById('title').innerText = "點擊單字開始學習";
         document.getElementById('content').innerHTML = "";
@@ -351,7 +320,6 @@
     });
 
     refresh();
-    
 </script>
 </body>
 </html>
