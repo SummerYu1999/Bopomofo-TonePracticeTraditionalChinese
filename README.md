@@ -352,5 +352,3 @@
     refresh();
     
 </script>
-</body>
-</html>
