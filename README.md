@@ -167,11 +167,7 @@
 
 <script>
     /**
-     * 【專業精密字典】 - 嚴格遵守提供的發音細節
-     */
-    const MasterDictionary = {
-       /**
-     * 【專業精密字典 - 純發音動作版】
+     * 【專業精密字典】 - 整合發音細節與編碼修正
      */
     const MasterDictionary = {
         // 1. 唇音類
@@ -222,8 +218,6 @@
         "ㄥ": "【鼻韻母】舌後根頂住軟顎，共鳴腔在脖子後方與鼻腔後部。",
         "ㄦ": "【特殊韻母】舌尖擺到位後快速鬆開，避免舌頭過度勾起產生重捲舌雜音。"
     };
-       
-    };
 
     const wordLib = [
         { c: ["老", "虎"], z: ["ㄌㄠˇ", "ㄏㄨˇ"] },
@@ -236,7 +230,7 @@
     let currentTask = null;
 
     /**
-     * 核心顯示函式：解決連動性問題
+     * 核心顯示函式：負責顯示註釋並自動修正編碼錯誤
      */
     function showDetail(index) {
         if (!currentTask || !currentTask.c[index]) return;
@@ -252,22 +246,22 @@
 
         document.getElementById('title').innerText = `正在學習：「${char}」 (${pinyin})`;
         const container = document.getElementById('content');
-        container.innerHTML = "";
+        container.innerHTML = ""; 
 
-        // 嚴格符號匹配：使用展開運算子確保每一個字符都被獨立檢索
+        // 符號匹配迴圈 (處理 ㄧ 與 一 的編碼問題)
         [...pinyin].forEach(sym => {
-            if (MasterDictionary[sym]) {
+            let cleanSym = (sym === "一") ? "ㄧ" : sym; 
+            if (MasterDictionary[cleanSym]) {
                 container.innerHTML += `
                     <div class="tip-card">
-                        <span class="tag">${sym}</span> ${MasterDictionary[sym]}
+                        <span class="tag">${cleanSym}</span> ${MasterDictionary[cleanSym]}
                     </div>`;
             }
         });
 
-        // 四大天王結合規律檢查 (ㄅㄆㄇㄈ + ㄨ 檢核)
+        // 四大天王結合規律檢查
         const first = pinyin[0];
         if (["ㄅ","ㄆ","ㄇ","ㄈ"].includes(first) && pinyin.includes("ㄨ")) {
-            // 這是特殊狀況，通常在資料庫中我們會避免 ㄆㄨㄥˊ，但若出現則提醒
             container.innerHTML += `
                 <div class="tip-card" style="border-left-color: #e67e22;">
                     <span class="tag">💡 規律</span> ㄅㄆㄇㄈ四大天王不與ㄨ結合（例如朋友不念ㄆㄨㄥˊ）。
