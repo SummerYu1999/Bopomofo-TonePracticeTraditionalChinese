@@ -161,6 +161,7 @@
 
     <div class="hotkey-hint">
         <strong>操作指引</strong>： 點擊下方按鈕替換單字 <strong>||<strong> 點擊國字查看單字註釋 <br> <strong>⌨️快捷鍵</strong>： [空白鍵] 更換單詞 <strong>||<strong> [1] [2] [3] 查看單字註釋
+        
     </div>
 
     <button onclick="refresh()">更換教學單詞</button>
