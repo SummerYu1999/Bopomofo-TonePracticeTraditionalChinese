@@ -148,6 +148,14 @@
             margin-top: 5px;
             display: block;
         }
+        .tone-visual-box {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    text-align: center;
+}
     </style>
 </head>
 <body>
@@ -163,6 +171,17 @@
     <div class="panel">
         <div id="title" class="active-title">點擊單字或按數字鍵開始學習</div>
         <div id="content"></div>
+        <div id="toneSection" class="tone-visual-box" style="display:none;">
+    <strong>五度標調法曲線 (音高參考)</strong><br>
+    <svg id="toneCanvas" width="200" height="150" viewBox="0 0 100 100" style="background: #fafafa; border-left: 2px solid #999; border-bottom: 2px solid #999; margin-top:10px;">
+        <line x1="0" y1="20" x2="100" y2="20" stroke="#eee" stroke-dasharray="2"/>
+        <line x1="0" y1="40" x2="100" y2="40" stroke="#eee" stroke-dasharray="2"/>
+        <line x1="0" y1="60" x2="100" y2="60" stroke="#eee" stroke-dasharray="2"/>
+        <line x1="0" y1="80" x2="100" y2="80" stroke="#eee" stroke-dasharray="2"/>
+        <path id="tonePath" d="" fill="none" stroke="#d63031" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+    <div id="toneValueDisplay" style="color:#d63031; font-weight:bold; margin-top:5px;"></div>
+</div>
     </div>
 
 <script>
@@ -228,86 +247,74 @@
     ];
 
     let currentTask = null;
+// 聲調與調值坐標對應表 (y坐標 20=5, 40=4, 60=3, 80=2, 100=1)
+    const toneMap = {
+        "": { val: "5-5 (第一聲)", path: "M 10 20 L 90 20" },
+        "ˊ": { val: "3-5 (第二聲)", path: "M 20 60 L 80 20" },
+        "ˇ": { val: "2-1-4 (第三聲)", path: "M 20 80 L 50 100 L 80 40" },
+        "ˋ": { val: "5-1 (第四聲)", path: "M 20 20 L 80 100" },
+        "˙": { val: "輕聲", path: "M 45 60 A 5 5 0 1 1 55 60" }
+    };
 
-    /**
-     * 核心顯示函式：負責顯示註釋並自動修正編碼錯誤
-     */
     function showDetail(index) {
         if (!currentTask || !currentTask.c[index]) return;
-        if (currentTask.c[index] === " ") return;
-
         const char = currentTask.c[index];
         const pinyin = currentTask.z[index];
 
-        // 視覺回饋
         document.querySelectorAll('.char-unit').forEach(el => el.classList.remove('active-trigger'));
         const target = document.querySelectorAll('.char-unit')[index];
         if (target) target.classList.add('active-trigger');
 
         document.getElementById('title').innerText = `正在學習：「${char}」 (${pinyin})`;
         const container = document.getElementById('content');
-        container.innerHTML = ""; 
+        container.innerHTML = "";
 
-        // 符號匹配迴圈 (處理 ㄧ 與 一 的編碼問題)
+        // 發音解析
         [...pinyin].forEach(sym => {
-            let cleanSym = (sym === "一") ? "ㄧ" : sym; 
+            let cleanSym = (sym === "一") ? "ㄧ" : sym;
             if (MasterDictionary[cleanSym]) {
-                container.innerHTML += `
-                    <div class="tip-card">
-                        <span class="tag">${cleanSym}</span> ${MasterDictionary[cleanSym]}
-                    </div>`;
+                container.innerHTML += `<div class="tip-card"><span class="tag">${cleanSym}</span> ${MasterDictionary[cleanSym]}</div>`;
             }
         });
 
-        // 四大天王結合規律檢查
-        const first = pinyin[0];
-        if (["ㄅ","ㄆ","ㄇ","ㄈ"].includes(first) && pinyin.includes("ㄨ")) {
-            container.innerHTML += `
-                <div class="tip-card" style="border-left-color: #e67e22;">
-                    <span class="tag">💡 規律</span> ㄅㄆㄇㄈ四大天王不與ㄨ結合（例如朋友不念ㄆㄨㄥˊ）。
-                </div>`;
+        // 繪製聲調曲線
+        const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : "";
+        const toneInfo = toneMap[toneMark];
+        if (toneInfo) {
+            document.getElementById('toneSection').style.display = "block";
+            document.getElementById('tonePath').setAttribute('d', toneInfo.path);
+            document.getElementById('toneValueDisplay').innerText = toneInfo.val;
         }
     }
 
-    /**
-     * 刷新單詞與重置
-     */
     function refresh() {
-        document.getElementById('title').innerText = "點擊單字或按數字鍵開始學習";
+        document.getElementById('title').innerText = "點擊單字開始學習";
         document.getElementById('content').innerHTML = "";
+        document.getElementById('toneSection').style.display = "none";
         
         currentTask = wordLib[Math.floor(Math.random() * wordLib.length)];
         const display = document.getElementById('display');
         display.innerHTML = "";
 
         currentTask.c.forEach((char, i) => {
-            if (char === " ") return;
             const z = currentTask.z[i];
             const tone = z.match(/[ˊˇˋ˙]/) ? z.match(/[ˊˇˋ˙]/)[0] : "";
             const pure = z.replace(/[ˊˇˋ˙]/, "");
-
             const unit = document.createElement('div');
             unit.className = 'char-unit';
             unit.onclick = () => showDetail(i);
-            unit.innerHTML = `
-                <div class="cn-zone">${char}</div>
-                <div class="zy-compound">
-                    <div class="zy-symbols">${[...pure].join("<br>")}</div>
-                    <div class="tone-zone"><span class="tone-mark">${tone}</span></div>
-                </div>`;
+            unit.innerHTML = `<div class="cn-zone">${char}</div><div class="zy-compound"><div class="zy-symbols">${[...pure].join("<br>")}</div><div class="tone-zone"><span class="tone-mark">${tone}</span></div></div>`;
             display.appendChild(unit);
         });
     }
 
-    // 鍵盤監聽
     window.addEventListener('keydown', (e) => {
         if (e.code === 'Space') { e.preventDefault(); refresh(); }
-        if (e.key === '1') showDetail(0);
-        if (e.key === '2') showDetail(1);
-        if (e.key === '3') showDetail(2);
+        if (['1','2','3'].includes(e.key)) showDetail(parseInt(e.key)-1);
     });
 
     refresh();
+    
 </script>
 </body>
 </html>
