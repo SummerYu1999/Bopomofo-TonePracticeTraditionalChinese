@@ -3,129 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常單詞隨機生成器 - 繁體注音版</title>
+    <title>生活單詞發音教學</title>
     <style>
         :root {
-            --bg-color: #f7f9fc;
-            --text-color: #2d3436;
-            --accent-color: #0984e3;
-            --ruby-color: #d63031;
+            --paper-bg: #fdfdfb;
+            --ink-color: #2d3436;
+            --zhuyin-color: #d63031;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #e5e5e5;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
             margin: 0;
             font-family: "標楷體", "DFKai-SB", serif;
         }
 
-        .container {
-            text-align: center;
-            padding: 20px;
+        .main-card {
+            background: var(--paper-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 40px;
+            max-width: 900px;
+            align-items: flex-start;
         }
 
-        /* 台灣標準：注音在右側的關鍵 CSS */
+        /* 漢字與注音排版關鍵 */
+        .display-area {
+            flex: 1;
+            text-align: center;
+            border-right: 1px dashed #ccc;
+            padding-right: 40px;
+        }
+
         ruby {
-            font-size: 6rem;
-            ruby-position: ruby-text; /* 標準定位 */
+            font-size: 8rem;
+            ruby-position: ruby-text; /* 讓注音在右側的關鍵 */
+            display: inline-flex;
             margin: 0 10px;
         }
 
-        /* 針對支援直排注音的瀏覽器優化 */
         rt {
-            font-size: 1.5rem;
-            color: var(--ruby-color);
-            writing-mode: vertical-rl; /* 強制注音直打 */
+            font-size: 2.2rem;
+            color: var(--zhuyin-color);
+            writing-mode: vertical-rl; /* 垂直排列注音 */
             text-orientation: upright;
-            user-select: none;
+            padding-left: 0.5rem;
+            line-height: 1.1;
         }
 
-        .category-tag {
-            font-size: 1.2rem;
-            background: #dfe6e9;
-            padding: 5px 15px;
-            border-radius: 20px;
+        /* 構造圖與提示區 */
+        .info-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .anatomy-img {
+            width: 100%;
+            max-width: 250px;
+            border: 1px solid #ddd;
             margin-bottom: 20px;
-            display: inline-block;
+        }
+
+        .hint-text {
+            background: #fff9db;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #5d4037;
         }
 
         button {
-            margin-top: 50px;
-            padding: 15px 40px;
-            font-size: 1.4rem;
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 1.2rem;
             cursor: pointer;
-            background-color: var(--accent-color);
+            background: var(--ink-color);
             color: white;
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: 0.2s;
-        }
-
-        button:hover {
-            background-color: #74b9ff;
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(0);
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="category" class="category-tag">點擊下方按鈕</div>
-        <div id="word-display">
-            <ruby>歡迎<rt>ㄏㄨㄢㄧㄥˊ</rt></ruby>使用
+<div class="main-card">
+    <div class="display-area">
+        <div id="word-box">
+            <ruby>歡迎<rt>ㄏㄨㄢㄧㄥˊ</rt></ruby>
         </div>
-        <br>
-        <button onclick="generate()">隨機換單詞</button>
+        <button onclick="nextWord()">隨機更換單詞</button>
     </div>
 
-    <script>
-        // 大量詞庫：[漢字陣列, 注音陣列, 分類]
-        // 這樣分開寫，才能確保每個字對應到正確的右側注音
-        const wordLib = [
-            {w: ["蘋", "果"], z: ["ㄆㄧㄥˊ", "ㄍㄨㄛˇ"], c: "水果"},
-            {w: ["香", "蕉"], z: ["ㄒㄧㄤ", "ㄐㄧㄠ"], c: "水果"},
-            {w: ["西", "瓜"], z: ["ㄒㄧ", "ㄍㄨㄚ"], c: "水果"},
-            {w: ["三", "明", "治"], z: ["ㄙㄢ", "ㄇㄧㄥˊ", "ㄓˋ"], c: "食物"},
-            {w: ["漢", "堡"], z: ["ㄏㄢˋ", "ㄅㄠˇ"], c: "食物"},
-            {w: ["腳", "踏", "車"], z: ["ㄐㄧㄠˇ", "ㄊㄚˋ", "ㄔㄜ"], c: "交通"},
-            {w: ["捷", "運"], z: ["ㄐㄧㄝˊ", "ㄩㄣˋ"], c: "交通"},
-            {w: ["鉛", "筆"], z: ["ㄑㄧㄢ", "ㄅㄧˇ"], c: "文具"},
-            {w: ["橡", "皮", "擦"], z: ["ㄒㄧㄤˋ", "ㄆㄧˊ", "ㄘㄚ"], c: "文具"},
-            {w: ["長", "頸", "鹿"], z: ["ㄔㄤˊ", "ㄐㄧㄥˇ", "ㄌㄨˋ"], c: "動物"},
-            {w: ["老", "虎"], z: ["ㄌㄠˇ", "ㄏㄨˇ"], c: "動物"},
-            {w: ["圖", "書", "館"], z: ["ㄊㄨˊ", "ㄕㄨ", "ㄍㄨㄢˇ"], c: "場所"},
-            {w: ["游", "泳", "池"], z: ["ㄧㄡˊ", "ㄩㄥˇ", "ㄔˊ"], c: "場所"},
-            {w: ["牙", "刷"], z: ["ㄧㄚˊ", "ㄕㄨㄚ"], c: "生活"},
-            {w: ["吹", "風", "機"], z: ["ㄔㄨㄟ", "ㄈㄥ", "ㄐㄧ"], c: "生活"},
-            {w: ["電視", "機"], z: ["ㄉㄧㄢˋ ㄕˋ", "ㄐㄧ"], c: "家電"}
-            // ... 你可以仿照格式繼續往下增加
-        ];
+    <div class="info-area">
+        <h3>發音部位提示</h3>
+        <img class="anatomy-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/VocalLines.png/300px-VocalLines.png" alt="發音部位圖">
+        <div id="hint-box" class="hint-text">
+            請點擊按鈕開始。
+        </div>
+    </div>
+</div>
 
-        function generate() {
-            const display = document.getElementById('word-display');
-            const cat = document.getElementById('category');
-            
-            const item = wordLib[Math.floor(Math.random() * wordLib.length)];
-            
-            let htmlContent = "";
-            // 將每個字及其注音封裝在 ruby 中，實現一對一右側排列
-            for (let i = 0; i < item.w.length; i++) {
-                htmlContent += `<ruby>${item.w[i]}<rt>${item.z[i]}</rt></ruby>`;
-            }
-            
-            display.innerHTML = htmlContent;
-            cat.innerText = item.c;
-        }
-    </script>
+<script>
+    // 詞庫資料：[漢字, 注音, 提示]
+    const wordLib = [
+        {w: "草莓", z: "ㄘㄠˇㄇㄟˊ", h: "<b>ㄘ (平舌音)：</b>舌尖抵住下齒背。<br><b>ㄇ (雙唇音)：</b>雙唇閉合發音。"},
+        {w: "電腦", z: "ㄉㄧㄢˋㄋㄠˇ", h: "<b>ㄉ (舌尖音)：</b>舌尖抵住上齒齦。<br><b>ㄋ (鼻音)：</b>氣流由鼻腔洩出。"},
+        {w: "葡萄", z: "ㄆㄨˊㄊㄠˊ", h: "<b>ㄆ (雙唇音)：</b>雙唇噴氣發音。<br><b>ㄊ (舌尖音)：</b>舌尖抵住上齒齦。"},
+        {w: "咖啡", z: "ㄎㄚㄈㄟ", h: "<b>ㄎ (舌根音)：</b>舌根抬起靠近軟顎。<br><b>ㄈ (唇齒音)：</b>上齒輕咬下唇。"},
+        {w: "獅子", z: "ㄕㄗ˙", h: "<b>ㄕ (翹舌音)：</b>舌尖翹起靠近硬顎。<br><b>ㄗ (平舌音)：</b>舌尖平伸靠近齒背。"}
+    ];
+
+    function nextWord() {
+        const item = wordLib[Math.floor(Math.random() * wordLib.length)];
+        const box = document.getElementById('word-box');
+        const hint = document.getElementById('hint-box');
+
+        // 為了達到你圖片中的精確對齊，如果是多個字，建議拆開標記
+        // 這邊示範合併標記，大部分瀏覽器能自動對應
+        box.innerHTML = `<ruby>${item.w}<rt>${item.z}</rt></ruby>`;
+        hint.innerHTML = item.h;
+    }
+</script>
+
 </body>
-</html># Bopomofo-TonePracticeTraditionalChinese
+</html>
