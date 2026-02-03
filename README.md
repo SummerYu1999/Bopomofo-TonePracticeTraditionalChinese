@@ -268,8 +268,8 @@
         document.getElementById('title').innerText = `正在學習：「${char}」 (${pinyin})`;
         const container = document.getElementById('content');
         container.innerHTML = "";
-
-        // 發音解析
+        
+        // 1. 發音解析 (處理 ㄅㄆㄇ ㄧㄨㄩ ㄚㄛㄝ等)
         [...pinyin].forEach(sym => {
             let cleanSym = (sym === "一") ? "ㄧ" : sym;
             if (MasterDictionary[cleanSym]) {
@@ -277,16 +277,37 @@
             }
         });
 
-        // 繪製聲調曲線
-        const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : "";
-        const toneInfo = toneMap[toneMark];
+        // 2. 聲調卡片化 (讓聲調符號也顯示統一的卡片格式)
+        const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : ""; 
+        const toneKey = toneMark === "" ? "" : toneMark; // 陰平在字典裡的 Key 是空字串
+        const toneInfo = toneMap[toneKey];
+
         if (toneInfo) {
+            // 決定顯示在卡片上的符號：陰平用一條橫線表示
+            const displayMark = (toneMark === "") ? "—" : toneMark; 
+            
+            // 產生一張跟注音符號長得一模一樣的卡片
+            container.innerHTML += `
+                <div class="tip-card" style="border-left-color: var(--accent);">
+                    <span class="tag" style="background:#fff5f5; color:var(--accent); border:1px solid var(--accent);">${displayMark}</span> 
+                    這是「${toneInfo.val.split(' ')[1]}」，請觀察下方的聲音走勢。
+                </div>`;
+
+            // 3. 更新象限圖
             document.getElementById('toneSection').style.display = "block";
-            document.getElementById('tonePath').setAttribute('d', toneInfo.path);
+            const pathElement = document.getElementById('tonePath');
+            pathElement.setAttribute('d', toneInfo.path);
+            
+            // 處理輕聲的實心點與其他聲調的空心線
+            if (toneMark === "˙") {
+                pathElement.setAttribute('fill', '#d63031');
+            } else {
+                pathElement.setAttribute('fill', 'none');
+            }
+            
             document.getElementById('toneValueDisplay').innerText = toneInfo.val;
         }
-    }
-
+        
     function refresh() {
         document.getElementById('title').innerText = "點擊單字開始學習";
         document.getElementById('content').innerHTML = "";
