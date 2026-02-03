@@ -13,7 +13,7 @@
             --font-zy: 36px;
             --font-tone: 24px;
             --primary: #2c3e50;
-            --accent: #d63031;
+            --accent: #27ae60;
         }
 
         body {
@@ -172,17 +172,29 @@
         <div id="title" class="active-title">點擊單字或按數字鍵開始學習</div>
         <div id="content"></div>
         <div id="toneSection" class="tone-visual-box" style="display:none;">
-    <strong>五度標調法曲線 (音高參考)</strong><br>
-    <svg id="toneCanvas" width="200" height="150" viewBox="0 0 100 100" style="background: #fafafa; border-left: 2px solid #999; border-bottom: 2px solid #999; margin-top:10px;">
-        <line x1="0" y1="20" x2="100" y2="20" stroke="#eee" stroke-dasharray="2"/>
-        <line x1="0" y1="40" x2="100" y2="40" stroke="#eee" stroke-dasharray="2"/>
-        <line x1="0" y1="60" x2="100" y2="60" stroke="#eee" stroke-dasharray="2"/>
-        <line x1="0" y1="80" x2="100" y2="80" stroke="#eee" stroke-dasharray="2"/>
-        <path id="tonePath" d="" fill="none" stroke="#d63031" stroke-width="4" stroke-linecap="round"/>
-    </svg>
-    <div id="toneValueDisplay" style="color:#d63031; font-weight:bold; margin-top:5px;"></div>
-</div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+        <div style="display: flex; flex-direction: column-reverse; justify-content: space-between; height: 160px; font-size: 12px; color: #888; padding-bottom: 30px;">
+            <span>1樓</span><span>2樓</span><span>3樓</span><span>4樓</span><span>5樓</span>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <svg id="toneCanvas" width="200" height="160" viewBox="0 0 100 100" style="background: #fff; border-left: 2px solid #555; border-bottom: 2px solid #555;">
+                <g id="gridPoints" fill="#ccc">
+                    <circle cx="0" cy="0" r="1"/><circle cx="25" cy="0" r="1"/><circle cx="50" cy="0" r="1"/><circle cx="75" cy="0" r="1"/><circle cx="100" cy="0" r="1"/>
+                    <circle cx="0" cy="25" r="1"/><circle cx="25" cy="25" r="1"/><circle cx="50" cy="25" r="1"/><circle cx="75" cy="25" r="1"/><circle cx="100" cy="25" r="1"/>
+                    <circle cx="0" cy="50" r="1"/><circle cx="25" cy="50" r="1"/><circle cx="50" cy="50" r="1"/><circle cx="75" cy="50" r="1"/><circle cx="100" cy="50" r="1"/>
+                    <circle cx="0" cy="75" r="1"/><circle cx="25" cy="75" r="1"/><circle cx="50" cy="75" r="1"/><circle cx="75" cy="75" r="1"/><circle cx="100" cy="75" r="1"/>
+                    <circle cx="0" cy="100" r="1"/><circle cx="25" cy="100" r="1"/><circle cx="50" cy="100" r="1"/><circle cx="75" cy="100" r="1"/><circle cx="100" cy="100" r="1"/>
+                </g>
+                <path id="tonePath" d="" fill="none" stroke="#27ae60" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div style="display: flex; justify-content: space-between; width: 200px; font-size: 12px; color: #888; padding-top: 8px;">
+                <span>1拍</span><span>2拍</span><span>3拍</span><span>4拍</span><span>5拍</span>
+            </div>
+        </div>
     </div>
+    <div id="toneValueDisplay" style="color:#27ae60; font-weight:bold; margin-top:15px; font-size: 1.3rem;"></div>
+</div>
 
 <script>
     /**
@@ -249,12 +261,17 @@
     let currentTask = null;
 // 聲調與調值坐標對應表 (y坐標 20=5, 40=4, 60=3, 80=2, 100=1)
     const toneMap = {
-        "": { val: "陰平", path: "M 10 20 L 90 20" },
-        "ˊ": { val: "陽平", path: "M 20 60 L 80 20" },
-        "ˇ": { val: "上聲", path: "M 20 80 L 50 100 L 80 40" },
-        "ˋ": { val: "去聲", path: "M 20 20 L 80 100" },
-        "˙": { val: "輕聲", path: "M 50,50 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0"}
-    };
+    // 陰平 55：從1拍5樓到5拍5樓
+    "":  { val: "陰平", path: "M 0 0 L 100 0" }, 
+    // 陽平 35：從1拍3樓到5拍5樓
+    "ˊ": { val: "陽平", path: "M 0 50 L 100 0" }, 
+    // 上聲 214：1拍2樓 -> 3拍1樓 -> 5拍4樓 (紮實轉折)
+    "ˇ": { val: "上聲", path: "M 0 75 Q 50 125 100 25" }, 
+    // 去聲 51：從1拍5樓到5拍1樓
+    "ˋ": { val: "去聲", path: "M 0 0 L 100 100" }, 
+    // 輕聲：半拍，定位在第3拍的3樓中心
+    "˙": { val: "輕聲", path: "M 50 50 m -2 0 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0" } 
+};
 
     function showDetail(index) {
         if (!currentTask || !currentTask.c[index]) return;
