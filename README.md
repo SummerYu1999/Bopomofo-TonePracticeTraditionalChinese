@@ -30,7 +30,7 @@
             padding: 10px 20px; 
             border-radius: 30px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            font-size: 0.95rem;
+            font-size: 1.3rem;
             color: #666;
         }
 
