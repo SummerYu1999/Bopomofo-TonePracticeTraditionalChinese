@@ -253,7 +253,7 @@
         "ˊ": { val: "陽平", path: "M 20 60 L 80 20" },
         "ˇ": { val: "上聲", path: "M 20 80 L 50 100 L 80 40" },
         "ˋ": { val: "去聲", path: "M 20 20 L 80 100" },
-        "˙": { val: "輕聲", path: "M 45 60 A 5 5 0 1 1 55 60" }
+        "˙": { val: "輕聲", path: "M 50,50 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0"}
     };
 
     function showDetail(index) {
@@ -307,7 +307,7 @@
             
             document.getElementById('toneValueDisplay').innerText = toneInfo.val;
         }
-        
+    }
     function refresh() {
         document.getElementById('title').innerText = "點擊單字開始學習";
         document.getElementById('content').innerHTML = "";
