@@ -277,34 +277,33 @@
             }
         });
 
-        // 2. 聲調卡片化 (讓聲調符號也顯示統一的卡片格式)
+       // 2. 聲調卡片化 (修正 undefined 並換成綠色)
         const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : ""; 
-        const toneKey = toneMark === "" ? "" : toneMark; // 陰平在字典裡的 Key 是空字串
+        const toneKey = toneMark === "" ? "" : toneMark; 
         const toneInfo = toneMap[toneKey];
 
         if (toneInfo) {
-            // 決定顯示在卡片上的符號：陰平用一條橫線表示
             const displayMark = (toneMark === "") ? "—" : toneMark; 
             
-            // 產生一張跟注音符號長得一模一樣的卡片
             container.innerHTML += `
-                <div class="tip-card" style="border-left-color: var(--accent);">
-                    <span class="tag" style="background:#fff5f5; color:var(--accent); border:1px solid var(--accent);">${displayMark}</span> 
-                    這是「${toneInfo.val.split(' ')[1]}」，請觀察下方的聲音走勢。
+                <div class="tip-card" style="border-left-color: #27ae60;">
+                    <span class="tag" style="background:#f0fff4; color:#27ae60; border:1px solid #27ae60;">${displayMark}</span> 
+                    這是「${toneInfo.val}」，請觀察下方的聲音走勢。
                 </div>`;
 
-            // 3. 更新象限圖
+            // 3. 更新象限圖 (顏色改為綠色)
             document.getElementById('toneSection').style.display = "block";
             const pathElement = document.getElementById('tonePath');
             pathElement.setAttribute('d', toneInfo.path);
+            pathElement.setAttribute('stroke', '#27ae60'); // 線條改綠色
             
-            // 處理輕聲的實心點與其他聲調的空心線
             if (toneMark === "˙") {
-                pathElement.setAttribute('fill', '#d63031');
+                pathElement.setAttribute('fill', '#27ae60'); // 輕聲實心點改綠色
             } else {
                 pathElement.setAttribute('fill', 'none');
             }
             
+            document.getElementById('toneValueDisplay').style.color = "#27ae60"; // 文字改綠色
             document.getElementById('toneValueDisplay').innerText = toneInfo.val;
         }
     }
