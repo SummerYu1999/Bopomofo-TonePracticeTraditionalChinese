@@ -2,155 +2,147 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>注音發音構造教學系統</title>
+    <title>精確象限注音教學系統</title>
     <style>
         :root {
-            --paper-bg: #fdfdfb;
-            --ink-color: #1a1a1a;
-            --ruby-color: #cd6133;
+            --grid-size: 200px; /* 方格大小 */
+            --font-main: 120px; /* 漢字大小 */
+            --font-zhuyin: 35px; /* 注音大小 */
+            --border-color: #d1d1d1;
         }
 
         body {
-            background-color: #e0e0e0;
+            background-color: #f0f2f5;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+            padding: 40px;
             font-family: "標楷體", "DFKai-SB", serif;
         }
 
-        /* 主容器 */
-        .main-container {
-            background-color: var(--paper-bg);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 900px;
-            width: 100%;
+        /* 單字容器：模擬你附圖的格子 */
+        .char-unit {
+            display: grid;
+            grid-template-columns: 1fr 45px; /* 左側漢字，右側固定寬度給注音 */
+            width: var(--grid-size);
+            height: var(--grid-size);
+            border: 2px solid var(--border-color); /* 外框 */
+            position: relative;
+            background: white;
+            margin: 0 10px; /* 字與字之間的適當間距 */
         }
 
-        /* 構造圖區域 */
-        .anatomy-box {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 40px;
-            border-bottom: 2px dashed #ccc;
-            padding-bottom: 30px;
-            width: 100%;
+        /* 模擬九宮格輔助線 (可選，若不需要可刪除) */
+        .char-unit::before {
+            content: "";
+            position: absolute;
+            top: 50%; left: 0; width: 100%; border-top: 1px dashed var(--border-color);
+            pointer-events: none;
         }
 
-        #anatomy-img {
-            width: 250px;
-            height: auto;
-            border: 1px solid #ddd;
-        }
-
-        .hint-text {
-            flex: 1;
-            font-size: 1.4rem;
-            line-height: 1.6;
-            color: #444;
-            background: #fff9e6;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        /* 核心排版：如附圖般的字音對齊 */
-        .word-display-area {
+        /* 繁體中文位置：左側中央 */
+        .chinese-char {
             display: flex;
             justify-content: center;
-            gap: 40px; /* 控制字與字之間的適當間距 */
-            margin: 40px 0;
-        }
-
-        ruby {
-            display: inline-flex;
             align-items: center;
-            font-size: 8rem; /* 漢字大小 */
-            line-height: 1;
+            font-size: var(--font-main);
+            border-right: 1px dashed var(--border-color);
+            z-index: 1;
         }
 
-        rt {
-            display: block;
-            font-size: 2.2rem; /* 注音大小 */
-            writing-mode: vertical-rl; /* 直排 */
-            text-orientation: upright;
-            color: var(--ruby-color);
-            margin-left: 15px; /* 字與注音的間距 */
+        /* 注音符號位置：右側垂直排列 */
+        .zhuyin-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: var(--font-zhuyin);
             line-height: 1.1;
-            letter-spacing: -2px; /* 讓注音緊湊一點，更像附圖 */
+            color: #d63031;
+            letter-spacing: -2px;
         }
 
+        .word-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* 構造圖與提示區 */
+        .info-panel {
+            max-width: 800px;
+            display: flex;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        #anatomy-img { width: 200px; height: auto; }
+        
         button {
-            padding: 15px 50px;
-            font-size: 1.5rem;
-            background-color: #2f3542;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: #34495e;
             color: white;
             border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: 0.3s;
+            border-radius: 5px;
+            margin-bottom: 30px;
         }
-
-        button:hover { background-color: #57606f; }
-        .highlight { color: #d63031; font-weight: bold; border-bottom: 2px solid; }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <div class="anatomy-box">
-        <img id="anatomy-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/VocalLines.png/300px-VocalLines.png" alt="發音構造圖">
-        <div id="hint-display" class="hint-text">點擊下方按鈕開始學習發音部位。</div>
-    </div>
+    <button onclick="updateWord()">隨機生成單詞</button>
 
-    <div id="word-area" class="word-display-area">
-        <ruby>歡<rt>ㄏㄨㄢ</rt></ruby>
-        <ruby>迎<rt>ㄧㄥˊ</rt></ruby>
-    </div>
+    <div id="display-row" class="word-row">
+        </div>
 
-    <button onclick="generateWord()">下一個日常單詞</button>
-</div>
+    <div class="info-panel">
+        <img id="anatomy-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/VocalLines.png/200px-VocalLines.png">
+        <div id="hint-text">點擊按鈕查看發音與部位提示</div>
+    </div>
 
 <script>
     const wordLib = [
-        {
-            chars: ["草", "莓"],
-            zhuyin: ["ㄘㄠˇ", "ㄇㄟˊ"],
-            hint: "「ㄘ」是<span class='highlight'>平舌音</span>，舌尖靠近上齒背；「ㄇ」是<span class='highlight'>雙唇音</span>，雙唇閉合。"
+        { 
+            chars: ["歡", "迎"], 
+            zhuyin: ["ㄏㄨㄢ", "ㄧㄥˊ"], 
+            hints: ["ㄏ：舌根音，舌根靠近軟顎", "ㄧ：齊齒呼，舌位高"] 
         },
-        {
-            chars: ["長", "頸", "鹿"],
-            zhuyin: ["ㄔㄤˊ", "ㄐㄧㄥˇ", "ㄌㄨˋ"],
-            hint: "「ㄔ」是<span class='highlight'>翹舌音</span>，舌尖往上顎翹；「ㄐ」是<span class='highlight'>舌面音</span>，舌面抬起。"
-        },
-        {
-            chars: ["咖", "啡"],
-            zhuyin: ["ㄎㄚ", "ㄈㄟ"],
-            hint: "「ㄎ」是<span class='highlight'>舌根音</span>，舌根隆起抵住軟顎；「ㄈ」是<span class='highlight'>唇齒音</span>，上齒輕觸下唇。"
+        { 
+            chars: ["草", "莓"], 
+            zhuyin: ["ㄘㄠˇ", "ㄇㄟˊ"], 
+            hints: ["ㄘ：平舌音，舌尖抵住齒背", "ㄇ：雙唇音，嘴唇閉合"] 
         }
     ];
 
-    function generateWord() {
+    function updateWord() {
         const item = wordLib[Math.floor(Math.random() * wordLib.length)];
-        const wordArea = document.getElementById('word-area');
-        const hintDisplay = document.getElementById('hint-display');
+        const row = document.getElementById('display-row');
+        const hint = document.getElementById('hint-text');
 
-        let html = "";
-        for (let i = 0; i < item.chars.length; i++) {
-            html += `<ruby>${item.chars[i]}<rt>${item.zhuyin[i]}</rt></ruby>`;
-        }
+        row.innerHTML = "";
+        item.chars.forEach((c, i) => {
+            const unit = document.createElement('div');
+            unit.className = 'char-unit';
+            unit.innerHTML = `
+                <div class="chinese-char">${c}</div>
+                <div class="zhuyin-box">${item.zhuyin[i].split('').join('<br>')}</div>
+            `;
+            row.appendChild(unit);
+        });
 
-        wordArea.innerHTML = html;
-        hintDisplay.innerHTML = item.hint;
+        hint.innerHTML = `<strong>發音提示：</strong><br>${item.hints.join('<br>')}`;
     }
-</script>
 
+    // 初始載入
+    updateWord();
+</script>
 </body>
 </html>
