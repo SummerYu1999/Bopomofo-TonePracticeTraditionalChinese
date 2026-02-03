@@ -30,7 +30,7 @@
             padding: 10px 20px; 
             border-radius: 30px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            font-size: 0.95rem;
+            font-size: 1.33rem;
             color: #666;
         }
 
@@ -160,7 +160,7 @@
 <body>
 
     <div class="hotkey-hint">
-        ⌨️ <strong>快捷鍵操作</strong>： [空白鍵] 更換單詞 | [1] [2] [3] 查看單字註釋
+         <strong>操作指引</strong>： 點擊下方按鈕更換單詞、典籍國字可查看單字註釋 or ⌨️[空白鍵] 更換單詞 | [1] [2] [3] 查看單字註釋
     </div>
 
     <button onclick="refresh()">更換教學單詞</button>
