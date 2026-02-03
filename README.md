@@ -2,93 +2,100 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>精確象限注音教學系統</title>
+    <title>注音精確定位系統</title>
     <style>
         :root {
-            --grid-size: 200px; /* 方格大小 */
-            --font-main: 120px; /* 漢字大小 */
-            --font-zhuyin: 35px; /* 注音大小 */
-            --border-color: #d1d1d1;
+            --grid-size: 200px;
+            --font-main: 110px;
+            --font-zhuyin: 35px;
+            --font-tone: 20px;
+            --ink-color: #2d3436;
+            --tone-color: #d63031;
         }
 
         body {
-            background-color: #f0f2f5;
+            background-color: #f5f6fa;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px;
             font-family: "標楷體", "DFKai-SB", serif;
+            padding: 50px;
         }
 
-        /* 單字容器：模擬你附圖的格子 */
-        .char-unit {
-            display: grid;
-            grid-template-columns: 1fr 45px; /* 左側漢字，右側固定寬度給注音 */
+        .word-row {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* 漢字主容器 */
+        .char-box {
+            display: flex;
             width: var(--grid-size);
             height: var(--grid-size);
-            border: 2px solid var(--border-color); /* 外框 */
-            position: relative;
             background: white;
-            margin: 0 10px; /* 字與字之間的適當間距 */
+            border: 2px solid #ccc;
+            position: relative;
         }
 
-        /* 模擬九宮格輔助線 (可選，若不需要可刪除) */
-        .char-unit::before {
-            content: "";
-            position: absolute;
-            top: 50%; left: 0; width: 100%; border-top: 1px dashed var(--border-color);
-            pointer-events: none;
-        }
-
-        /* 繁體中文位置：左側中央 */
-        .chinese-char {
+        /* 漢字象限 */
+        .chinese {
+            flex: 3;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: var(--font-main);
-            border-right: 1px dashed var(--border-color);
-            z-index: 1;
+            border-right: 1px dashed #ddd;
         }
 
-        /* 注音符號位置：右側垂直排列 */
-        .zhuyin-box {
+        /* 注音與聲調複合象限 */
+        .zhuyin-compound {
+            flex: 1;
+            display: flex;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        /* 注音符號垂直排列 */
+        .zhuyin-text {
+            flex: 2;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             font-size: var(--font-zhuyin);
             line-height: 1.1;
-            color: #d63031;
-            letter-spacing: -2px;
         }
 
-        .word-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 40px;
+        /* 聲調絕對定位：標在右側 */
+        .tone {
+            flex: 1;
+            position: relative;
+            font-size: var(--font-tone);
+            color: var(--tone-color);
         }
 
-        /* 構造圖與提示區 */
+        /* 聲調符號位置微調 */
+        .tone-mark {
+            position: absolute;
+            right: 5px;
+            /* 預設二三四聲在中間偏上，輕聲需額外邏輯 */
+            top: 40%; 
+        }
+
         .info-panel {
-            max-width: 800px;
-            display: flex;
-            gap: 20px;
-            background: white;
+            background: #fff;
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            max-width: 600px;
         }
-
-        #anatomy-img { width: 200px; height: auto; }
         
         button {
             padding: 12px 30px;
             font-size: 1.2rem;
             cursor: pointer;
-            background: #34495e;
+            background: #0984e3;
             color: white;
             border: none;
             border-radius: 5px;
@@ -98,51 +105,59 @@
 </head>
 <body>
 
-    <button onclick="updateWord()">隨機生成單詞</button>
+    <button onclick="nextWord()">生成隨機單詞</button>
 
-    <div id="display-row" class="word-row">
-        </div>
+    <div id="word-display" class="word-row"></div>
 
     <div class="info-panel">
-        <img id="anatomy-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/VocalLines.png/200px-VocalLines.png">
-        <div id="hint-text">點擊按鈕查看發音與部位提示</div>
+        <div id="hint-content">點擊按鈕查看構造圖與發音提示</div>
     </div>
 
 <script>
     const wordLib = [
         { 
             chars: ["歡", "迎"], 
-            zhuyin: ["ㄏㄨㄢ", "ㄧㄥˊ"], 
-            hints: ["ㄏ：舌根音，舌根靠近軟顎", "ㄧ：齊齒呼，舌位高"] 
+            // 格式：[注音, 聲調]
+            data: [
+                { z: "ㄏㄨㄢ", t: "" },    // 一聲不標
+                { z: "ㄧㄥ", t: "ˊ" }    // 二聲標在右側
+            ],
+            hint: "「ㄏ」是舌根音，舌根隆起；「ㄧㄥ」是齊齒呼。"
         },
         { 
             chars: ["草", "莓"], 
-            zhuyin: ["ㄘㄠˇ", "ㄇㄟˊ"], 
-            hints: ["ㄘ：平舌音，舌尖抵住齒背", "ㄇ：雙唇音，嘴唇閉合"] 
+            data: [
+                { z: "ㄘㄠ", t: "ˇ" },
+                { z: "ㄇㄟ", t: "ˊ" }
+            ],
+            hint: "「ㄘ」是平舌音；「ㄇ」是雙唇音。"
         }
     ];
 
-    function updateWord() {
+    function nextWord() {
         const item = wordLib[Math.floor(Math.random() * wordLib.length)];
-        const row = document.getElementById('display-row');
-        const hint = document.getElementById('hint-text');
+        const display = document.getElementById('word-display');
+        const hint = document.getElementById('hint-content');
 
-        row.innerHTML = "";
+        display.innerHTML = "";
         item.chars.forEach((c, i) => {
-            const unit = document.createElement('div');
-            unit.className = 'char-unit';
-            unit.innerHTML = `
-                <div class="chinese-char">${c}</div>
-                <div class="zhuyin-box">${item.zhuyin[i].split('').join('<br>')}</div>
+            const unit = item.data[i];
+            const charDiv = document.createElement('div');
+            charDiv.className = 'char-box';
+            charDiv.innerHTML = `
+                <div class="chinese">${c}</div>
+                <div class="zhuyin-compound">
+                    <div class="zhuyin-text">${unit.z.split('').join('<br>')}</div>
+                    <div class="tone"><span class="tone-mark">${unit.t}</span></div>
+                </div>
             `;
-            row.appendChild(unit);
+            display.appendChild(charDiv);
         });
 
-        hint.innerHTML = `<strong>發音提示：</strong><br>${item.hints.join('<br>')}`;
+        hint.innerHTML = `<strong>發音部位提示：</strong><br>${item.hint}`;
     }
 
-    // 初始載入
-    updateWord();
+    nextWord();
 </script>
 </body>
 </html>
