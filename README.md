@@ -13,7 +13,7 @@
             --font-zy: 36px;
             --font-tone: 24px;
             --primary: #2c3e50;
-            --accent: #27ae60;
+            --accent: #3498db;
         }
 
         body {
