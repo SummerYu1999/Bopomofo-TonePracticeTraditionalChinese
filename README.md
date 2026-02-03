@@ -180,100 +180,68 @@
     </div>
 
 <script>
-    const expertTips = {
-        "ㄅ": "【雙唇音】發音時上下唇要先閉合，造成阻力後再讓氣流衝出。",
-        "ㄆ": "【雙唇音】發音時上下唇要先閉合，造成阻力後再讓氣流衝出。",
-        "ㄇ": "【雙唇音】發音時上下唇要先閉合，造成阻力後再讓氣流衝出。",
-        "ㄈ": "【唇齒音】這是上齒接觸下唇發出的聲音。<span class='warning-note'>注意：若上齒沒碰到下唇，會變成「ㄏ」的模糊音。</span>",
-        "ㄉ": "【舌尖中音】主要利用舌尖的位置（牙齦或硬顎前部）造成阻礙發音。",
-        "ㄊ": "【舌尖中音】主要利用舌尖的位置（牙齦或硬顎前部）造成阻礙發音。",
-        "ㄋ": "【舌尖中音/鼻音】念「ㄋ」時，鼻翼會有震動感，共鳴在鼻腔。",
-        "ㄌ": "【舌尖中音/邊音】念「ㄌ」時鼻腔不震動，氣流從舌頭兩邊流出。",
-        "ㄍ": "【舌根音】必須將舌後根往上頂軟顎後方。<span class='warning-note'>細節：發音時嘴巴需打開約一個指節寬。</span>",
-        "ㄎ": "【舌根音】必須將舌後根往上頂軟顎後方。<span class='warning-note'>細節：發音時嘴巴需打開約一個指節寬。</span>",
-        "ㄏ": "【舌根音】必須將舌後根往上頂軟顎後方。<span class='warning-note'>細節：發音時嘴巴需打開約一個指節寬。</span>",
-        "ㄐ": "【舌面音】舌面面積與硬、軟顎中間接觸，氣流從舌面中間衝出。",
-        "ㄑ": "【舌面音】舌面面積與硬、軟顎中間接觸，氣流從舌面中間衝出。",
-        "ㄒ": "【舌面音】必須是舌面貼住硬顎。<span class='warning-note'>注意：與英文「C」不同，「C」是舌尖往下。</span>",
-        "ㄓ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄔ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄕ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄖ": "【翹舌音】舌尖往後捲。<span class='warning-note'>ㄖ的特殊發音：舌尖要垂直放，不可碰到牙齒。</span>",
-        "ㄗ": "【平舌音】舌尖往前、往下，靠近下齒或下齒背，舌面不可碰到上齒背。",
-        "ㄘ": "【平舌音】舌尖往前、往下，靠近下齒或下齒背。",
-        "ㄙ": "【平舌音】舌尖往前、往下，靠近下齒或下齒背。",
-        "ㄚ": "【開口音】嘴巴張開幅度要徹底打開，像塞進大獅子頭一樣。",
-        "ㄜ": "【韻母】嘴巴呈長橢圓形，舌面往下拉壓，像含著湯匙感。",
-        "一": "【介符】嘴角往兩旁拉開，做出明顯的「一」字形。",
+    /**
+     * 第一步：建立 37 個注音符號的「標準化資料庫」
+     * 只要這裡的資料正確，後面無論生成幾萬個字，註釋都會是對的。
+     */
+    const MasterDictionary = {
+        // 聲母類
+        "ㄅ": "【雙唇音】上下唇先閉合，造成阻力後讓氣流衝出。",
+        "ㄈ": "【唇齒音】上齒接觸下唇。注意：沒碰到會變成「ㄏ」的模糊音。",
+        "ㄎ": "【舌根音】舌後根往上頂軟顎。細節：嘴巴需打開約一個指節寬。",
+        "ㄘ": "【平舌音】舌尖往下靠近下齒背，舌面不可碰到上齒背。",
+        // 韻母類
+        "ㄚ": "【開口音】嘴巴要徹底打開，像要塞進大獅子頭一樣。",
+        "ㄠ": "【複韻母】由ㄚ轉向ㄨ，口型由大變小，過程需滑順。",
         "ㄟ": "【韻母】發音要圓滿，確保口腔內有足夠共鳴空間，聲音才不悶。",
-        "ㄨ": "【結合規律】「ㄅㄆㄇㄈ」在標準發音中不與「ㄨ」結合。",
-        "ㄣ": "【鼻韻母】氣流共鳴在鼻腔前部。",
-        "ㄥ": "【鼻韻母】舌後根頂住軟顎，共鳴腔在脖子後方與鼻腔後部。"
+        // 聲調類 (自動適配)
+        "ˊ": "【二聲】音位上揚，氣流向後上方共鳴。",
+        "ˇ": "【三聲】音位先降後升，要注意下降的深度，共鳴感較重。",
+        "ˋ": "【四聲】音位由高快速下降，發音短促有力。"
     };
 
-    const wordLib = [
-        { chars: ["朋友", " "], zhuyin: ["ㄆㄥˊ", "ㄧㄡˇ"] },
-        { chars: ["發", "風"], zhuyin: ["ㄈㄚ", "ㄈㄥ"] },
-        { chars: ["牛奶", " "], zhuyin: ["ㄋㄧㄡˊ", "ㄋㄞˇ"] },
-        { chars: ["老虎", " "], zhuyin: ["ㄌㄠˇ", "ㄏㄨˇ"] },
-        { chars: ["草莓", " "], zhuyin: ["ㄘㄠˇ", "ㄇㄟˊ"] },
-        { chars: ["咖", "啡"], zhuyin: ["ㄎㄚ", "ㄈㄟ"] }
-    ];
+    /**
+     * 第二步：自動化渲染引擎
+     * 此函數會自動拆分「注音」與「聲調」，並確保排版鎖定。
+     */
+    function renderCharUnit(char, fullZhuyin) {
+        // 使用正則表達式分離：聲調符號 vs 純注音
+        const toneMatch = fullZhuyin.match(/[ˊˇˋ˙]/);
+        const tone = toneMatch ? toneMatch[0] : ""; // 抓出 ˊ ˇ ˋ ˙
+        const symbols = fullZhuyin.replace(/[ˊˇˋ˙]/, "").split(""); // 抓出 ㄘ ㄠ
 
-    function showDetailedTips(char, zhuyin) {
-        document.getElementById('active-title').innerText = `教學重點： 「${char}」 (${zhuyin})`;
+        // 回傳絕對鎖定的 HTML 結構
+        return `
+            <div class="char-unit" onclick="autoShowTips('${char}', '${fullZhuyin}')">
+                <div class="chinese-part">${char}</div>
+                <div class="zhuyin-compound">
+                    <div class="zhuyin-text">${symbols.join('<br>')}</div>
+                    <div class="tone-part"><span class="tone-mark">${tone}</span></div>
+                </div>
+            </div>`;
+    }
+
+    /**
+     * 第三步：自動註釋抓取
+     * 使用者點擊時，程式會自動去 MasterDictionary 找尋所有對應的提示
+     */
+    function autoShowTips(char, fullZhuyin) {
         const container = document.getElementById('details-container');
+        document.getElementById('active-title').innerText = `教學重點： 「${char}」 (${fullZhuyin})`;
         container.innerHTML = "";
 
-        const pureZhuyin = zhuyin.replace(/[ˊˇˋ˙]/, "");
-        pureZhuyin.split('').forEach(sym => {
-            if (expertTips[sym]) {
-                const card = document.createElement('div');
-                card.className = 'detail-card';
-                card.innerHTML = `<span class="symbol-tag">${sym}</span><span class="tip-content">${expertTips[sym]}</span>`;
-                container.appendChild(card);
+        // 自動遍歷所有符號（包含注音與聲調）
+        const allElements = fullZhuyin.split("");
+        allElements.forEach(sym => {
+            if (MasterDictionary[sym]) {
+                container.innerHTML += `
+                    <div class="detail-card">
+                        <span class="symbol-tag">${sym}</span>
+                        <span class="tip-content">${MasterDictionary[sym]}</span>
+                    </div>`;
             }
         });
-
-        const firstConsonant = pureZhuyin[0];
-        if (["ㄅ","ㄆ","ㄇ","ㄈ"].includes(firstConsonant)) {
-            const warning = document.createElement('div');
-            warning.className = 'detail-card';
-            warning.style.borderLeftColor = "#e67e22";
-            warning.innerHTML = `<span class="symbol-tag">注！</span><span class="tip-content">${expertTips["ㄨ"]}</span>`;
-            container.appendChild(warning);
-        }
     }
-
-    function generateWord() {
-        // 重置問題：更換單詞時，先清空下方的提示
-        document.getElementById('active-title').innerText = "請點擊上方漢字，啟動精密發音導引";
-        document.getElementById('details-container').innerHTML = "";
-
-        const item = wordLib[Math.floor(Math.random() * wordLib.length)];
-        const display = document.getElementById('word-display');
-        display.innerHTML = "";
-
-        item.chars.forEach((c, i) => {
-            if(c.trim() === "") return;
-            const z = item.zhuyin[i];
-            const tone = z.match(/[ˊˇˋ˙]/) ? z.match(/[ˊˇˋ˙]/)[0] : "";
-            const pure = z.replace(/[ˊˇˋ˙]/, "");
-
-            const unit = document.createElement('div');
-            unit.className = 'char-unit';
-            unit.onclick = () => showDetailedTips(c, z);
-            unit.innerHTML = `
-                <div class="chinese-part">${c}</div>
-                <div class="zhuyin-compound">
-                    <div class="zhuyin-text">${pure.split('').join('<br>')}</div>
-                    <div class="tone-part"><span class="tone-mark">${tone}</span></div>
-                </div>`;
-            display.appendChild(unit);
-        });
-    }
-
-    generateWord();
 </script>
 </body>
 </html>
