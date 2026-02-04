@@ -13,6 +13,43 @@
             --font-tone: 24px;
             --primary: #2c3e50;
             --accent: #3498db;
+
+            /* --- 這裡是插入的第一步樣式 --- */
+            --map-width: 350px;
+        }
+
+        /* 這裡也建議順便貼上地圖與紅點的關鍵設定 */
+        .learning-container {
+            display: flex;
+            gap: 25px;
+            max-width: 1250px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+        .image-map-wrapper {
+            position: relative;
+            width: var(--map-width);
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-top: 6px solid var(--primary);
+        }
+        .anatomy-dot {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: rgba(231, 76, 60, 0.6);
+            border: 2px solid #e74c3c;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: pulse-red 1.2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.3; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
         }
 
         body {
