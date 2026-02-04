@@ -33,7 +33,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             border-top: 6px solid var(--primary);
         }
-        .anatomy-dot {
+        .pronounce-dot {
             position: absolute;
             width: 22px;
             height: 22px;
@@ -43,6 +43,7 @@
             transform: translate(-50%, -50%);
             pointer-events: none;
             animation: pulse-blue 1.2s infinite;
+            z-index: 100; 
         }
         @keyframes pulse-blue {
             0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
@@ -190,6 +191,33 @@
     border-radius: 10px;
     text-align: center;
 }
+
+.pronounce-dot {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: rgba(52, 152, 219, 0.4);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: pulse-blue 1.2s infinite;
+            z-index: 100;
+        }
+
+        .learning-container {
+            display: flex;
+            flex-direction: row; 
+            gap: 25px;
+            align-items: flex-start;
+        }
+
+        .map-relative {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
     </style>
 </head>
 <body>
@@ -371,27 +399,47 @@
     "˙": { val: "輕聲", path: "M 50 50 m -2 0 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0" } 
 };
 
-    function showDetail(index) {
-        if (!currentTask || !currentTask.c[index]) return;
-        const char = currentTask.c[index];
-        const pinyin = currentTask.z[index];
+function showDetail(index) {
+    if (!currentTask || !currentTask.c[index]) return;
+    const char = currentTask.c[index];
+    const pinyin = currentTask.z[index];
 
-        document.querySelectorAll('.char-unit').forEach(el => el.classList.remove('active-trigger'));
-        const target = document.querySelectorAll('.char-unit')[index];
-        if (target) target.classList.add('active-trigger');
+    // 更新選中狀態樣式
+    document.querySelectorAll('.char-unit').forEach(el => el.classList.remove('active-trigger'));
+    const target = document.querySelectorAll('.char-unit')[index];
+    if (target) target.classList.add('active-trigger');
 
-        document.getElementById('title').innerText = `正在學習：「${char}」 (${pinyin})`;
-        const container = document.getElementById('content');
-        container.innerHTML = "";
+    document.getElementById('title').innerText = `正在學習：「${char}」 (${pinyin})`;
+    const container = document.getElementById('content');
+    container.innerHTML = "";
+
+    //----【新增：點擊新字時，先清空舊的藍點與部位標籤】
+    document.getElementById('dot-layer').innerHTML = "";
+    document.getElementById('location-label').innerText = "";
         
         // 1. 發音解析 (處理 ㄅㄆㄇ ㄧㄨㄩ ㄚㄛㄝ等)
-        [...pinyin].forEach(sym => {
-            let cleanSym = (sym === "一") ? "ㄧ" : sym;
-            if (MasterDictionary[cleanSym]) {
-                container.innerHTML += `<div class="tip-card"><span class="tag">${cleanSym}</span> ${MasterDictionary[cleanSym]}</div>`;
-            }
-        });
+    [...pinyin].forEach(sym => {
+        let cleanSym = (sym === "一") ? "ㄧ" : sym;
+        const data = MasterDictionary[cleanSym]; 
 
+        if (data) {
+            //----【修正：改為讀取 data.desc】
+            container.innerHTML += `<div class="tip-card"><span class="tag">${cleanSym}</span> ${data.desc}</div>`;
+
+            //----【新增：繪製藍色閃爍點】
+            if (data.pos) {
+                const dot = document.createElement('div');
+                dot.className = 'pronounce-dot'; // CSS 中必須設定為藍色
+                dot.style.left = data.pos.x + '%';
+                dot.style.top = data.pos.y + '%';
+                document.getElementById('dot-layer').appendChild(dot);
+                
+                // 更新部位文字標籤
+                document.getElementById('location-label').innerText = `發音部位：${data.loc}`;
+            }
+        }
+    });
+        
        // 2. 聲調卡片化 (修正 undefined 並換成綠色)
         const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : ""; 
         const toneKey = toneMark === "" ? "" : toneMark; 
@@ -426,7 +474,8 @@
         document.getElementById('title').innerText = "點擊單字開始學習";
         document.getElementById('content').innerHTML = "";
         document.getElementById('toneSection').style.display = "none";
-        
+        if(document.getElementById('dot-layer')) document.getElementById('dot-layer').innerHTML = "";
+        if(document.getElementById('location-label')) document.getElementById('location-label').innerText = "";
         currentTask = wordLib[Math.floor(Math.random() * wordLib.length)];
         const display = document.getElementById('display');
         display.innerHTML = "";
