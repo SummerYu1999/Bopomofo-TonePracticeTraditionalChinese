@@ -14,7 +14,8 @@
             --font-tone: 24px;
             --primary: #2c3e50;
             --accent: #3498db;
-            --map-width: 350px;
+            --map-width: 450px; /* 稍微調寬以利觀察地圖 */
+            --red-dot: #e74c3c;
         }
 
         body {
@@ -26,7 +27,6 @@
             padding: 30px;
         }
 
-        /* 佈局容器 */
         .learning-container {
             display: flex;
             gap: 25px;
@@ -59,8 +59,6 @@
             margin-left: 10px;
             transition: 0.3s;
         }
-
-        button:hover { background: #34495e; transform: scale(1.05); }
 
         .word-row {
             display: flex;
@@ -95,30 +93,10 @@
             border-right: 1px dashed #ccc;
         }
 
-        .zy-compound {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-        }
-
-        .zy-symbols {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: var(--font-zy);
-            line-height: 1.1;
-        }
-
+        .zy-compound { display: grid; grid-template-columns: 2fr 1fr; }
+        .zy-symbols { display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: var(--font-zy); line-height: 1.1; }
         .tone-zone { position: relative; }
-
-        .tone-mark {
-            position: absolute;
-            top: 25%;
-            left: 0;
-            font-size: var(--font-tone);
-            color: var(--accent);
-            font-weight: bold;
-        }
+        .tone-mark { position: absolute; top: 25%; left: 0; font-size: var(--font-tone); color: var(--accent); font-weight: bold; }
 
         .panel {
             flex: 1;
@@ -127,6 +105,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             border-top: 6px solid var(--primary);
+            min-height: 450px;
         }
 
         .image-map-wrapper {
@@ -136,18 +115,23 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             border-top: 6px solid var(--accent);
+            position: relative;
         }
 
+        /* 亮點容器 */
+        .map-relative { position: relative; width: 100%; }
+        
         .anatomy-dot {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(231, 76, 60, 0.7);
-            border: 2px solid #e74c3c;
+            width: 28px;
+            height: 28px;
+            background: rgba(231, 76, 60, 0.4);
+            border: 2px solid var(--red-dot);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            animation: pulse-red 1.2s infinite;
+            animation: pulse-red 1s infinite;
+            z-index: 10;
         }
 
         @keyframes pulse-red {
@@ -180,27 +164,12 @@
             padding: 2px 8px;
             border-radius: 4px;
         }
-
-        .warning-note {
-            color: #e67e22;
-            font-weight: bold;
-            margin-top: 5px;
-            display: block;
-        }
-
-        .tone-visual-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
 
     <div class="hotkey-hint">
-        <strong>操作指引</strong>： 點擊下方國字查看註釋 <button onclick="refresh()">更換教學單詞</button> <br>
+        <strong>操作指引</strong>： 點擊下方國字查看註釋與發音部位 <button onclick="refresh()">更換教學單詞</button> <br>
         <strong>⌨️快捷鍵</strong>： [空白鍵] 更換單詞 || [1] [2] [3] 快速查看
     </div>
 
@@ -210,97 +179,73 @@
         <div class="panel">
             <div id="title" class="active-title">請點擊單字開始學習</div>
             <div id="content"></div>
-            
-            <div id="toneSection" class="tone-visual-box" style="display:none;">
-                <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-                    <div style="flex-direction: column-reverse; display: flex; justify-content: space-between; height: 160px; font-size: 12px; color: #888; padding-bottom: 30px;">
-                        <span>1樓</span><span>2樓</span><span>3樓</span><span>4樓</span><span>5樓</span>
-                    </div>
-                    <div>
-                        <svg id="toneCanvas" width="200" height="160" viewBox="0 0 100 100" style="background: #fff; border-left: 2px solid #555; border-bottom: 2px solid #555;">
-                            <g fill="#ccc">
-                                <circle cx="0" cy="0" r="1" /><circle cx="50" cy="0" r="1" /><circle cx="100" cy="0" r="1" />
-                                <circle cx="0" cy="50" r="1" /><circle cx="50" cy="50" r="1" /><circle cx="100" cy="50" r="1" />
-                                <circle cx="0" cy="100" r="1" /><circle cx="50" cy="100" r="1" /><circle cx="100" cy="100" r="1" />
-                            </g>
-                            <path id="tonePath" d="" fill="none" stroke="#27ae60" stroke-width="6" stroke-linecap="round" />
-                        </svg>
-                    </div>
-                </div>
-                <div id="toneValueDisplay" style="color:#27ae60; font-weight:bold; margin-top:10px;"></div>
-            </div>
         </div>
 
         <div class="image-map-wrapper">
-            <h3 style="text-align:center; margin-top:0; color:var(--primary);">發音部位導航</h3>
-            <div style="position: relative;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Human_Vocal_Tract.svg/350px-Human_Vocal_Tract.svg.png" 
-                     style="width:100%; height:auto; border-radius: 8px;">
-                <div id="marker-layer"></div>
+            <h3 style="text-align:center; margin-top:0; color:var(--primary);">調音部位導航 (連動顯示)</h3>
+            <div class="map-relative">
+                <img id="main-map" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Places_of_articulation.svg/500px-Places_of_articulation.svg.png" style="width:100%; height:auto; border-radius: 8px;">
+                <div id="dot-layer"></div>
             </div>
-            <p style="font-size: 0.85rem; color: #7f8c8d; margin-top: 10px; text-align: center;">
-                ※ 點擊符號將顯示共鳴點位置
-            </p>
+            <p id="part-name-display" style="font-size: 0.9rem; color: #e67e22; margin-top: 10px; text-align: center; font-weight: bold;">
+                </p>
         </div>
     </div>
 
 <script>
+    // 座標映射表 (依據 500px 比例估算百分比)
+    const PartCoords = {
+        1: {x: 8, y: 39, n: "外唇"}, 2: {x: 14, y: 44, n: "內唇"}, 3: {x: 22, y: 40, n: "牙齒"},
+        4: {x: 27, y: 35, n: "齒齦"}, 5: {x: 34, y: 34, n: "齒齦後部"}, 6: {x: 41, y: 32, n: "硬腭前部"},
+        7: {x: 52, y: 31, n: "硬腭"}, 8: {x: 71, y: 35, n: "軟腭"}, 9: {x: 78, y: 48, n: "小舌"},
+        10: {x: 84, y: 64, n: "咽腔壁"}, 11: {x: 85, y: 92, n: "聲門"}, 12: {x: 76, y: 83, n: "會厭"},
+        13: {x: 71, y: 67, n: "舌根"}, 14: {x: 62, y: 57, n: "舌面後"}, 15: {x: 42, y: 55, n: "舌面前"},
+        16: {x: 22, y: 55, n: "舌葉"}, 17: {x: 17, y: 58, n: "舌尖"}, 18: {x: 21, y: 65, n: "舌尖下部"}
+    };
+
     const MasterDictionary = {
-        "ㄅ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。",
-        "ㄆ": "【雙唇音】同ㄅ，但需伴隨較強的噴氣感。",
-        "ㄇ": "【雙唇音】鼻音。雙唇閉合，氣流從鼻腔流出。",
-        "ㄈ": "【唇齒音】上齒接觸下唇。注意：若沒碰到下唇會變成ㄏ。",
-        "ㄉ": "【舌尖中音】舌尖抵住上齒齦，氣流突發而出。",
-        "ㄊ": "【舌尖中音】同ㄉ，但氣流較強。",
-        "ㄋ": "【鼻音】舌尖抵住上齒齦，氣流從鼻腔出。",
-        "ㄌ": "【邊音】舌尖抵住上齒齦，氣流從舌頭兩側流出。",
-        "ㄍ": "【舌根音】舌後根頂住軟顎，氣流突發而出。",
-        "ㄎ": "【舌根音】同ㄍ，但氣流較強。",
-        "ㄏ": "【舌根音】舌後根靠近軟顎，氣流摩擦而出。",
-        "ㄐ": "【舌面音】舌面前部抵住硬顎前部。",
-        "ㄑ": "【舌面音】同ㄐ，但氣流較強。",
-        "ㄒ": "【舌面音】舌面前部靠近硬顎，氣流摩擦而出。",
-        "ㄓ": "【翹舌音】舌尖上翹，抵住硬顎前部。",
-        "ㄔ": "【翹舌音】同ㄓ，但氣流較強。",
-        "ㄕ": "【翹舌音】舌尖上翹，靠近硬顎，氣流摩擦。",
-        "ㄖ": "【翹舌音】發音位置同ㄕ，但聲帶顫動。",
-        "ㄗ": "【平舌音】舌尖抵住上齒背。",
-        "ㄘ": "【平舌音】同ㄗ，但氣流較強。",
-        "ㄙ": "【平舌音】舌尖靠近上齒背，氣流摩擦。",
-        "ㄧ": "【齊齒介符】嘴角向兩邊展開。",
-        "ㄨ": "【合口介符】雙唇收圓向前突出。",
-        "ㄩ": "【撮口介符】雙唇收圓成小孔狀。",
-        "ㄚ": "【韻母】口腔大開，舌位低。",
-        "ㄛ": "【韻母】圓唇，舌位中後。",
-        "ㄜ": "【韻母】不圓唇，舌位中後。",
-        "ㄝ": "【韻母】不圓唇，舌位中前。",
-        "ㄞ": "【複韻母】由ㄚ滑向ㄧ。",
-        "ㄟ": "【複韻母】由ㄝ滑向ㄧ。",
-        "ㄠ": "【複韻母】由ㄚ滑向ㄨ。",
-        "ㄡ": "【複韻母】由ㄛ滑向ㄨ。",
-        "ㄢ": "【鼻韻母】前鼻音，舌尖抵住齒齦結束。",
-        "ㄣ": "【鼻韻母】前鼻音，發音短促。",
-        "ㄤ": "【鼻韻母】後鼻音，舌根抵住軟顎結束。",
-        "ㄥ": "【鼻韻母】後鼻音，共鳴在後方。",
-        "ㄦ": "【捲舌韻母】舌位在中，舌尖捲起。"
+        "ㄅ": { d: "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。", p: [1, 2] },
+        "ㄆ": { d: "【雙唇音】同ㄅ，但需伴隨較強的噴氣感。", p: [1, 2] },
+        "ㄇ": { d: "【雙唇音】鼻音。雙唇閉合，氣流從鼻腔流出。", p: [1, 2, 8] },
+        "ㄈ": { d: "【唇齒音】上齒接觸下唇。注意：若沒碰到下唇會變成ㄏ。", p: [1, 3] },
+        "ㄉ": { d: "【舌尖中音】舌尖抵住上齒齦，氣流突發而出。", p: [4, 17] },
+        "ㄊ": { d: "【舌尖中音】同ㄉ，但氣流較強。", p: [4, 17] },
+        "ㄋ": { d: "【鼻音】舌尖抵住上齒齦，氣流從鼻腔出。", p: [4, 17, 8] },
+        "ㄌ": { d: "【邊音】舌尖抵住上齒齦，氣流從舌頭兩側流出。", p: [4, 17] },
+        "ㄍ": { d: "【舌根音】舌後根頂住軟顎，氣流突發而出。", p: [8, 14] },
+        "ㄎ": { d: "【舌根音】同ㄍ，但氣流較強。", p: [8, 14] },
+        "ㄏ": { d: "【舌根音】舌後根靠近軟顎，氣流摩擦而出。", p: [8, 14] },
+        "ㄐ": { d: "【舌面音】舌面前部抵住硬顎前部。", p: [6, 15] },
+        "ㄑ": { d: "【舌面音】同ㄐ，但氣流較強。", p: [6, 15] },
+        "ㄒ": { d: "【舌面音】舌面前部靠近硬顎，氣流摩擦。", p: [6, 15] },
+        "ㄓ": { d: "【翹舌音】舌尖上翹，抵住硬顎前部。", p: [5, 17] },
+        "ㄔ": { d: "【翹舌音】同ㄓ，但氣流較強。", p: [5, 17] },
+        "ㄕ": { d: "【翹舌音】舌尖上翹，靠近硬顎。", p: [5, 17] },
+        "ㄖ": { d: "【翹舌音】位置同ㄕ，但帶聲帶顫動。", p: [5, 17, 11] },
+        "ㄗ": { d: "【平舌音】舌尖抵住上齒背。", p: [3, 17] },
+        "ㄘ": { d: "【平舌音】同ㄗ，但氣流較強。", p: [3, 17] },
+        "ㄙ": { d: "【平舌音】舌尖靠近上齒背。", p: [3, 17] },
+        "ㄧ": { d: "【齊齒介符】嘴角向兩邊展開。", p: [15] },
+        "ㄨ": { d: "【合口介符】雙唇收圓向前突出。", p: [1, 2] },
+        "ㄩ": { d: "【撮口介符】雙唇收圓成小孔狀。", p: [1, 2, 15] },
+        "ㄚ": { d: "【韻母】口腔大開，舌位低。", p: [10, 14] },
+        "ㄛ": { d: "【韻母】圓唇，舌位中後。", p: [1, 2, 8] },
+        "ㄜ": { d: "【韻母】不圓唇，舌位中後。", p: [8, 14] },
+        "ㄝ": { d: "【韻母】不圓唇，舌位中前。", p: [7, 15] },
+        "ㄢ": { d: "【前鼻音】舌尖抵住齒齦結束。", p: [4, 17, 8] },
+        "ㄤ": { d: "【後鼻音】舌根抵住軟顎結束。", p: [8, 14] },
+        "ㄦ": { d: "【捲舌韻母】舌位在中，舌尖捲起。", p: [5, 17] }
     };
 
     const wordLib = [
         { c: ["老", "虎"], z: ["ㄌㄠˇ", "ㄏㄨˇ"] },
         { c: ["發", "風"], z: ["ㄈㄚ", "ㄈㄥ"] },
         { c: ["朋", "友"], z: ["ㄆㄥˊ", "ㄧㄡˇ"] },
-        { c: ["咖", "啡"], z: ["ㄎㄚ", "ㄈㄟ"] },
-        { c: ["歡", "迎"], z: ["ㄏㄨㄢ", "ㄧㄥˊ"] }
+        { c: ["注", "音"], z: ["ㄓㄨˋ", "ㄧㄣ"] },
+        { c: ["教", "學"], z: ["ㄐㄧㄠˋ", "ㄒㄩㄝˊ"] }
     ];
 
     let currentTask = null;
-    const toneMap = {
-        "":  { val: "陰平", path: "M 0 0 L 100 0" }, 
-        "ˊ": { val: "陽平", path: "M 0 50 L 100 0" }, 
-        "ˇ": { val: "上聲", path: "M 0 75 Q 50 125 100 25" }, 
-        "ˋ": { val: "去聲", path: "M 0 0 L 100 100" }, 
-        "˙": { val: "輕聲", path: "M 50 50 m -2 0 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0" } 
-    };
 
     function showDetail(index) {
         if (!currentTask || !currentTask.c[index]) return;
@@ -313,28 +258,38 @@
 
         document.getElementById('title').innerText = `正在學習：「${char}」 (${pinyin})`;
         const container = document.getElementById('content');
-        container.innerHTML = "";
+        const dotLayer = document.getElementById('dot-layer');
+        const nameDisplay = document.getElementById('part-name-display');
         
+        container.innerHTML = "";
+        dotLayer.innerHTML = "";
+        let activePartNames = new Set();
+
         [...pinyin].forEach(sym => {
             let cleanSym = (sym === "一") ? "ㄧ" : sym;
-            if (MasterDictionary[cleanSym]) {
-                container.innerHTML += `<div class="tip-card"><span class="tag">${cleanSym}</span> ${MasterDictionary[cleanSym]}</div>`;
+            const entry = MasterDictionary[cleanSym];
+            if (entry) {
+                container.innerHTML += `<div class="tip-card"><span class="tag">${cleanSym}</span> ${entry.d}</div>`;
+                // 產生亮點
+                entry.p.forEach(pid => {
+                    const coord = PartCoords[pid];
+                    activePartNames.add(`${pid}.${coord.n}`);
+                    const dot = document.createElement('div');
+                    dot.className = 'anatomy-dot';
+                    dot.style.left = coord.x + '%';
+                    dot.style.top = coord.y + '%';
+                    dotLayer.appendChild(dot);
+                });
             }
         });
-
-        const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : ""; 
-        const toneInfo = toneMap[toneMark];
-        if (toneInfo) {
-            document.getElementById('toneSection').style.display = "block";
-            document.getElementById('tonePath').setAttribute('d', toneInfo.path);
-            document.getElementById('toneValueDisplay').innerText = toneInfo.val;
-        }
+        nameDisplay.innerText = "啟用部位：" + Array.from(activePartNames).join("、");
     }
 
     function refresh() {
         document.getElementById('title').innerText = "請點擊單字開始學習";
         document.getElementById('content').innerHTML = "";
-        document.getElementById('toneSection').style.display = "none";
+        document.getElementById('dot-layer').innerHTML = "";
+        document.getElementById('part-name-display').innerText = "";
         
         currentTask = wordLib[Math.floor(Math.random() * wordLib.length)];
         const display = document.getElementById('display');
