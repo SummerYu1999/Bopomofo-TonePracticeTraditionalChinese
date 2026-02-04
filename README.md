@@ -13,8 +13,6 @@
             --font-tone: 24px;
             --primary: #2c3e50;
             --accent: #3498db;
-
-            /* --- 這裡是插入的第一步樣式 --- */
             --map-width: 350px;
         }
 
