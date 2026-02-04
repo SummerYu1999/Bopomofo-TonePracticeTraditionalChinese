@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8" />
@@ -13,43 +14,7 @@
             --font-tone: 24px;
             --primary: #2c3e50;
             --accent: #3498db;
-
-            /* --- 這裡是插入的第一步樣式 --- */
             --map-width: 350px;
-        }
-
-        /* 這裡也建議順便貼上地圖與紅點的關鍵設定 */
-        .learning-container {
-            display: flex;
-            gap: 25px;
-            max-width: 1250px;
-            margin: 0 auto;
-            align-items: flex-start;
-        }
-        .image-map-wrapper {
-            position: relative;
-            width: var(--map-width);
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-top: 6px solid var(--primary);
-        }
-        .anatomy-dot {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            background: rgba(231, 76, 60, 0.6);
-            border: 2px solid #e74c3c;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            animation: pulse-red 1.2s infinite;
-        }
-        @keyframes pulse-red {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.3; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
         }
 
         body {
@@ -61,25 +26,37 @@
             padding: 30px;
         }
 
+        /* 佈局容器 */
+        .learning-container {
+            display: flex;
+            gap: 25px;
+            max-width: 1250px;
+            width: 95%;
+            margin: 0 auto;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
         .hotkey-hint { 
             margin-bottom: 20px; 
             background: #fff; 
             padding: 10px 20px; 
             border-radius: 30px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: #666;
+            text-align: center;
         }
 
         button {
-            padding: 12px 45px;
-            font-size: 1.2rem;
+            padding: 8px 25px;
+            font-size: 1rem;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            margin-bottom: 25px;
+            margin-left: 10px;
             transition: 0.3s;
         }
 
@@ -88,7 +65,7 @@
         .word-row {
             display: flex;
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             justify-content: center;
         }
 
@@ -106,7 +83,7 @@
 
         .char-unit.active-trigger {
             border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(214, 48, 49, 0.25);
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.25);
             transform: translateY(-5px);
         }
 
@@ -144,8 +121,7 @@
         }
 
         .panel {
-            max-width: 850px;
-            width: 100%;
+            flex: 1;
             background: white;
             padding: 30px;
             border-radius: 15px;
@@ -153,8 +129,35 @@
             border-top: 6px solid var(--primary);
         }
 
+        .image-map-wrapper {
+            width: var(--map-width);
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-top: 6px solid var(--accent);
+        }
+
+        .anatomy-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(231, 76, 60, 0.7);
+            border: 2px solid #e74c3c;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: pulse-red 1.2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.3; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+        }
+
         .active-title {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: var(--accent);
             margin-bottom: 20px;
             border-bottom: 2px solid #eee;
@@ -184,103 +187,102 @@
             margin-top: 5px;
             display: block;
         }
+
         .tone-visual-box {
-    margin-top: 20px;
-    padding: 20px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    text-align: center;
-}
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
     <div class="hotkey-hint">
-        <strong>操作指引</strong>： 點擊右方按鈕替換單字 <strong>||<strong> 點擊國字查看單字註釋  <button onclick="refresh()">更換教學單詞</button> <br> <strong>⌨️快捷鍵</strong>： [空白鍵] 更換單詞 <strong>||<strong> [1] [2] [3] 查看單字註釋
+        <strong>操作指引</strong>： 點擊下方國字查看註釋 <button onclick="refresh()">更換教學單詞</button> <br>
+        <strong>⌨️快捷鍵</strong>： [空白鍵] 更換單詞 || [1] [2] [3] 快速查看
+    </div>
 
     <div id="display" class="word-row"></div>
 
-    <div class="panel">
-        <div id="title" class="active-title">點擊單字或按數字鍵開始學習</div>
-        <div id="content"></div>
-        <div id="toneSection" class="tone-visual-box" style="display:none;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-        <div style="display: flex; flex-direction: column-reverse; justify-content: space-between; height: 160px; font-size: 12px; color: #888; padding-bottom: 30px;">
-            <span>1樓</span><span>2樓</span><span>3樓</span><span>4樓</span><span>5樓</span>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <svg id="toneCanvas" width="200" height="160" viewBox="0 0 100 100" style="background: #fff; border-left: 2px solid #555; border-bottom: 2px solid #555;">
-                <g id="gridPoints" fill="#ccc">
-                    <circle cx="0" cy="0" r="1" /><circle cx="25" cy="0" r="1" /><circle cx="50" cy="0" r="1" /><circle cx="75" cy="0" r="1" /><circle cx="100" cy="0" r="1" />
-                    <circle cx="0" cy="25" r="1" /><circle cx="25" cy="25" r="1" /><circle cx="50" cy="25" r="1" /><circle cx="75" cy="25" r="1" /><circle cx="100" cy="25" r="1" />
-                    <circle cx="0" cy="50" r="1" /><circle cx="25" cy="50" r="1" /><circle cx="50" cy="50" r="1" /><circle cx="75" cy="50" r="1" /><circle cx="100" cy="50" r="1" />
-                    <circle cx="0" cy="75" r="1" /><circle cx="25" cy="75" r="1" /><circle cx="50" cy="75" r="1" /><circle cx="75" cy="75" r="1" /><circle cx="100" cy="75" r="1" />
-                    <circle cx="0" cy="100" r="1" /><circle cx="25" cy="100" r="1" /><circle cx="50" cy="100" r="1" /><circle cx="75" cy="100" r="1" /><circle cx="100" cy="100" r="1" />
-                </g>
-                <path id="tonePath" d="" fill="none" stroke="#27ae60" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <div style="display: flex; justify-content: space-between; width: 200px; font-size: 12px; color: #888; padding-top: 8px;">
-                <span>1拍</span><span>2拍</span><span>3拍</span><span>4拍</span><span>5拍</span>
+    <div class="learning-container">
+        <div class="panel">
+            <div id="title" class="active-title">請點擊單字開始學習</div>
+            <div id="content"></div>
+            
+            <div id="toneSection" class="tone-visual-box" style="display:none;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    <div style="flex-direction: column-reverse; display: flex; justify-content: space-between; height: 160px; font-size: 12px; color: #888; padding-bottom: 30px;">
+                        <span>1樓</span><span>2樓</span><span>3樓</span><span>4樓</span><span>5樓</span>
+                    </div>
+                    <div>
+                        <svg id="toneCanvas" width="200" height="160" viewBox="0 0 100 100" style="background: #fff; border-left: 2px solid #555; border-bottom: 2px solid #555;">
+                            <g fill="#ccc">
+                                <circle cx="0" cy="0" r="1" /><circle cx="50" cy="0" r="1" /><circle cx="100" cy="0" r="1" />
+                                <circle cx="0" cy="50" r="1" /><circle cx="50" cy="50" r="1" /><circle cx="100" cy="50" r="1" />
+                                <circle cx="0" cy="100" r="1" /><circle cx="50" cy="100" r="1" /><circle cx="100" cy="100" r="1" />
+                            </g>
+                            <path id="tonePath" d="" fill="none" stroke="#27ae60" stroke-width="6" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                </div>
+                <div id="toneValueDisplay" style="color:#27ae60; font-weight:bold; margin-top:10px;"></div>
             </div>
         </div>
+
+        <div class="image-map-wrapper">
+            <h3 style="text-align:center; margin-top:0; color:var(--primary);">發音部位導航</h3>
+            <div style="position: relative;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Human_Vocal_Tract.svg/350px-Human_Vocal_Tract.svg.png" 
+                     style="width:100%; height:auto; border-radius: 8px;">
+                <div id="marker-layer"></div>
+            </div>
+            <p style="font-size: 0.85rem; color: #7f8c8d; margin-top: 10px; text-align: center;">
+                ※ 點擊符號將顯示共鳴點位置
+            </p>
+        </div>
     </div>
-    <div id="toneValueDisplay" style="color:#27ae60; font-weight:bold; margin-top:15px; font-size: 1.3rem;"></div>
-</div>
 
 <script>
-    /**
-     * 【專業精密字典】 - 整合發音細節與編碼修正
-     */
     const MasterDictionary = {
-        // 1. 唇音類
-        "ㄅ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。*注意不要造成爆音",
-        "ㄆ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。*注意不要造成爆音",
-        "ㄇ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。*注意不要造成爆音",
-        "ㄈ": "【唇齒音】上齒接觸下唇。<span class='warning-note'>注意：若沒碰到下唇會變成「ㄏ」的模糊音。</span>",
-
-        // 2. 舌尖與舌根
-        "ㄉ": "【舌尖中音】利用舌尖位置（牙齦或硬顎前部）及舌面微凸造成阻礙發音。",
-        "ㄊ": "【舌尖中音】利用舌尖位置（牙齦或硬顎前部）及舌面為凹造成阻礙發音。",
-        "ㄋ": "【鼻音】鼻翼會有震動感，共鳴在鼻腔。",
-        "ㄌ": "【邊音】鼻腔不震動，氣流從舌頭兩邊流出。",
-        "ㄍ": "【舌根音】舌後根頂住軟顎。<span class='warning-note'>細節：嘴巴需打開約一個指節寬，否則韻母會跑掉。</span>",
-        "ㄎ": "【舌根音】舌後根頂住軟顎。<span class='warning-note'>細節：嘴巴需打開約一個指節寬。</span>",
-        "ㄏ": "【舌根音】舌後根頂住軟顎。<span class='warning-note'>細節：嘴巴需打開約一個指節寬。</span>",
-
-        // 3. 舌面與平翹舌
-        "ㄐ": "【舌面音】舌面與硬軟顎接觸，氣流從舌面中間衝出。",
-        "ㄑ": "【舌面音】舌面與硬軟顎接觸，氣流從舌面中間衝出。",
-        "ㄒ": "【舌面音】舌面貼住硬顎。<span class='warning-note'>注意：與英文「C」(舌尖往下)不同。</span>",
-        "ㄓ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄔ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄕ": "【翹舌音】舌尖要往後捲，指向硬顎的位置。",
-        "ㄖ": "【翹舌音】舌尖垂直放，不可碰到牙齒。",
-        "ㄗ": "【平舌音】舌尖往前下靠近下齒背，舌面不可碰到上齒背。",
-        "ㄘ": "【平舌音】舌尖往前下靠近下齒背，舌面不可碰到上齒背。",
-        "ㄙ": "【平舌音】舌尖往前下靠近下齒背，舌面不可碰到上齒背。",
-
-        // 4. 介符 (齊齒、合口、撮口)
-        "ㄧ": "【介符/齊齒】嘴角往兩旁拉開做出「一」字形，有助於口型擺動。",
-        "一": "【介符/齊齒】嘴角往兩旁拉開做出「一」字形，有助於口型擺動。",
-        "ㄨ": "【介符/合口】雙唇收圓向前突。規律：ㄅㄆㄇㄈ不與ㄨ結合。",
-        "ㄩ": "【介符/撮口】嘴唇需用力向中間收攏成圓孔狀。發音時嘴部空間與氣流流暢度並重。",
-
-        // 5. 韻母 (單、複、鼻、特殊)
-        "ㄚ": "【韻母】嘴巴要徹底打開，像要塞進大獅子頭一樣。",
-        "ㄛ": "【單韻母】圓唇口型。注意：ㄅㄆㄇㄈ後應念ㄛ（早期教法），維持口型純淨。",
-        "ㄜ": "【單韻母】鴨蛋形長橢圓口型，舌面往下拉壓（含湯匙感）。",
-        "ㄝ": "【單韻母】口型要圓滿，確保足夠空間，避免因吃字導致音軌模糊。",
-        "ㄞ": "【複韻母】運要圓滿。由「ㄚ」徹底打開起頭，滑向「ㄧ」音軌。",
-        "ㄟ": "【複韻母】發音要圓滿，確保口腔內共鳴空間足夠，聲音才不悶。",
-        "ㄠ": "【複韻母】由「ㄚ」轉向「ㄨ」，口型由大變小，過程需滑順。",
-        "ㄡ": "【複韻母】由「ㄛ」起點收於「ㄨ」。維持氣流連貫，確保音軌完整。",
-        "ㄢ": "【前鼻音】氣流在口腔前部與鼻腔產生共鳴。",
-        "ㄣ": "【鼻韻母】氣流共鳴在鼻腔前部。",
-        "ㄤ": "【後鼻音】舌後根頂住軟顎。共鳴腔在脖子後方與鼻腔後部，嘴巴開度要足。",
-        "ㄥ": "【鼻韻母】舌後根頂住軟顎，共鳴腔在脖子後方與鼻腔後部。",
-        "ㄦ": "【特殊韻母】舌尖擺到位後快速鬆開，避免舌頭過度勾起產生重捲舌雜音。"
+        "ㄅ": "【雙唇音】上下唇先閉合，造成阻力後再讓氣流衝出。",
+        "ㄆ": "【雙唇音】同ㄅ，但需伴隨較強的噴氣感。",
+        "ㄇ": "【雙唇音】鼻音。雙唇閉合，氣流從鼻腔流出。",
+        "ㄈ": "【唇齒音】上齒接觸下唇。注意：若沒碰到下唇會變成ㄏ。",
+        "ㄉ": "【舌尖中音】舌尖抵住上齒齦，氣流突發而出。",
+        "ㄊ": "【舌尖中音】同ㄉ，但氣流較強。",
+        "ㄋ": "【鼻音】舌尖抵住上齒齦，氣流從鼻腔出。",
+        "ㄌ": "【邊音】舌尖抵住上齒齦，氣流從舌頭兩側流出。",
+        "ㄍ": "【舌根音】舌後根頂住軟顎，氣流突發而出。",
+        "ㄎ": "【舌根音】同ㄍ，但氣流較強。",
+        "ㄏ": "【舌根音】舌後根靠近軟顎，氣流摩擦而出。",
+        "ㄐ": "【舌面音】舌面前部抵住硬顎前部。",
+        "ㄑ": "【舌面音】同ㄐ，但氣流較強。",
+        "ㄒ": "【舌面音】舌面前部靠近硬顎，氣流摩擦而出。",
+        "ㄓ": "【翹舌音】舌尖上翹，抵住硬顎前部。",
+        "ㄔ": "【翹舌音】同ㄓ，但氣流較強。",
+        "ㄕ": "【翹舌音】舌尖上翹，靠近硬顎，氣流摩擦。",
+        "ㄖ": "【翹舌音】發音位置同ㄕ，但聲帶顫動。",
+        "ㄗ": "【平舌音】舌尖抵住上齒背。",
+        "ㄘ": "【平舌音】同ㄗ，但氣流較強。",
+        "ㄙ": "【平舌音】舌尖靠近上齒背，氣流摩擦。",
+        "ㄧ": "【齊齒介符】嘴角向兩邊展開。",
+        "ㄨ": "【合口介符】雙唇收圓向前突出。",
+        "ㄩ": "【撮口介符】雙唇收圓成小孔狀。",
+        "ㄚ": "【韻母】口腔大開，舌位低。",
+        "ㄛ": "【韻母】圓唇，舌位中後。",
+        "ㄜ": "【韻母】不圓唇，舌位中後。",
+        "ㄝ": "【韻母】不圓唇，舌位中前。",
+        "ㄞ": "【複韻母】由ㄚ滑向ㄧ。",
+        "ㄟ": "【複韻母】由ㄝ滑向ㄧ。",
+        "ㄠ": "【複韻母】由ㄚ滑向ㄨ。",
+        "ㄡ": "【複韻母】由ㄛ滑向ㄨ。",
+        "ㄢ": "【鼻韻母】前鼻音，舌尖抵住齒齦結束。",
+        "ㄣ": "【鼻韻母】前鼻音，發音短促。",
+        "ㄤ": "【鼻韻母】後鼻音，舌根抵住軟顎結束。",
+        "ㄥ": "【鼻韻母】後鼻音，共鳴在後方。",
+        "ㄦ": "【捲舌韻母】舌位在中，舌尖捲起。"
     };
 
     const wordLib = [
@@ -292,19 +294,13 @@
     ];
 
     let currentTask = null;
-// 聲調與調值坐標對應表 (y坐標 20=5, 40=4, 60=3, 80=2, 100=1)
     const toneMap = {
-    // 陰平 55：從1拍5樓到5拍5樓
-    "":  { val: "陰平", path: "M 0 0 L 100 0" }, 
-    // 陽平 35：從1拍3樓到5拍5樓
-    "ˊ": { val: "陽平", path: "M 0 50 L 100 0" }, 
-    // 上聲 214：1拍2樓 -> 3拍1樓 -> 5拍4樓 (紮實轉折)
-    "ˇ": { val: "上聲", path: "M 0 75 Q 50 125 100 25" }, 
-    // 去聲 51：從1拍5樓到5拍1樓
-    "ˋ": { val: "去聲", path: "M 0 0 L 100 100" }, 
-    // 輕聲：半拍，定位在第3拍的3樓中心
-    "˙": { val: "輕聲", path: "M 50 50 m -2 0 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0" } 
-};
+        "":  { val: "陰平", path: "M 0 0 L 100 0" }, 
+        "ˊ": { val: "陽平", path: "M 0 50 L 100 0" }, 
+        "ˇ": { val: "上聲", path: "M 0 75 Q 50 125 100 25" }, 
+        "ˋ": { val: "去聲", path: "M 0 0 L 100 100" }, 
+        "˙": { val: "輕聲", path: "M 50 50 m -2 0 a 2 2 0 1 0 4 0 a 2 2 0 1 0 -4 0" } 
+    };
 
     function showDetail(index) {
         if (!currentTask || !currentTask.c[index]) return;
@@ -319,7 +315,6 @@
         const container = document.getElementById('content');
         container.innerHTML = "";
         
-        // 1. 發音解析 (處理 ㄅㄆㄇ ㄧㄨㄩ ㄚㄛㄝ等)
         [...pinyin].forEach(sym => {
             let cleanSym = (sym === "一") ? "ㄧ" : sym;
             if (MasterDictionary[cleanSym]) {
@@ -327,38 +322,17 @@
             }
         });
 
-       // 2. 聲調卡片化 (修正 undefined 並換成綠色)
         const toneMark = pinyin.match(/[ˊˇˋ˙]/) ? pinyin.match(/[ˊˇˋ˙]/)[0] : ""; 
-        const toneKey = toneMark === "" ? "" : toneMark; 
-        const toneInfo = toneMap[toneKey];
-
+        const toneInfo = toneMap[toneMark];
         if (toneInfo) {
-            const displayMark = (toneMark === "") ? "—" : toneMark; 
-            
-            container.innerHTML += `
-                <div class="tip-card" style="border-left-color: #27ae60;">
-                    <span class="tag" style="background:#f0fff4; color:#27ae60; border:1px solid #27ae60;">${displayMark}</span> 
-                    這是「${toneInfo.val}」，請觀察下方的聲音走勢。
-                </div>`;
-
-            // 3. 更新象限圖 (顏色改為綠色)
             document.getElementById('toneSection').style.display = "block";
-            const pathElement = document.getElementById('tonePath');
-            pathElement.setAttribute('d', toneInfo.path);
-            pathElement.setAttribute('stroke', '#27ae60'); // 線條改綠色
-            
-            if (toneMark === "˙") {
-                pathElement.setAttribute('fill', '#27ae60'); // 輕聲實心點改綠色
-            } else {
-                pathElement.setAttribute('fill', 'none');
-            }
-            
-            document.getElementById('toneValueDisplay').style.color = "#27ae60"; // 文字改綠色
+            document.getElementById('tonePath').setAttribute('d', toneInfo.path);
             document.getElementById('toneValueDisplay').innerText = toneInfo.val;
         }
     }
+
     function refresh() {
-        document.getElementById('title').innerText = "點擊單字開始學習";
+        document.getElementById('title').innerText = "請點擊單字開始學習";
         document.getElementById('content').innerHTML = "";
         document.getElementById('toneSection').style.display = "none";
         
@@ -384,5 +358,6 @@
     });
 
     refresh();
-    
 </script>
+</body>
+</html>
