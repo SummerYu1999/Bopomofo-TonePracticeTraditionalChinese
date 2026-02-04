@@ -37,14 +37,14 @@
             position: absolute;
             width: 22px;
             height: 22px;
-            background: rgba(231, 76, 60, 0.6);
-            border: 2px solid #e74c3c;
+            background: rgba(52, 152, 219, 0.4);
+            border: 2px solid var(--accent);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            animation: pulse-red 1.2s infinite;
+            animation: pulse-blue 1.2s infinite;
         }
-        @keyframes pulse-red {
+        @keyframes pulse-blue {
             0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
             50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.3; }
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
