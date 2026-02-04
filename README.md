@@ -198,7 +198,7 @@
         <strong>操作指引</strong>： 點擊右方按鈕替換單字 <strong>||<strong> 點擊國字查看單字註釋  <button onclick="refresh()">更換教學單詞</button> <br> <strong>⌨️快捷鍵</strong>： [空白鍵] 更換單詞 <strong>||<strong> [1] [2] [3] 查看單字註釋
 
     <div id="display" class="word-row"></div>
-
+<div class="learning-container">
     <div class="panel">
         <div id="title" class="active-title">點擊單字或按數字鍵開始學習</div>
         <div id="content"></div>
@@ -226,6 +226,15 @@
     </div>
     <div id="toneValueDisplay" style="color:#27ae60; font-weight:bold; margin-top:15px; font-size: 1.3rem;"></div>
 </div>
+    <div class="image-map-wrapper">
+        <h3 style="text-align:center; margin-top:0; color:var(--primary); font-size: 1.2rem;">發音部位</h3>
+        <div class="map-relative">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Places_of_articulation.svg/500px-Places_of_articulation.svg.png" style="width:100%; height:auto; display:block;">
+            <div id="dot-layer"></div>
+        </div>
+        <div id="location-label" style="text-align:center; margin-top:10px; color:var(--accent); font-weight:bold; min-height:1.2em;"></div>
+    </div>
+    </div>
 
 <script>
     /**
